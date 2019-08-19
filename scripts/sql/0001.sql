@@ -17,7 +17,8 @@ COMMENT ON COLUMN "user_profile"."status" IS '-1 - deleted, 0 - inactive, 1 - ac
 
 CREATE TABLE user_contact (
  user_id INTEGER NOT NULL,
- address VARCHAR(512),
+ address1 VARCHAR(512),
+ address2 VARCHAR(512),
  phone1 VARCHAR(16),
  phone2 VARCHAR(16),
  mail VARCHAR(128),
