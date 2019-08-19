@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- SQL XML created by WWW SQL Designer, https://github.com/ondras/wwwsqldesigner/ -->
+<!-- Active URL: http://localhost:8080/ -->
+<sql>
+    <datatypes db="postgresql">
+        <group label="Numeric" color="rgb(238,238,170)">
+            <type label="Integer" length="0" sql="INTEGER" re="INT" quote=""/>
+            <type label="Small Integer" length="0" sql="SMALLINT" quote=""/>
+            <type label="Big Integer" length="0" sql="BIGINT" quote=""/>
+            <type label="Decimal" length="1" sql="DECIMAL" re="numeric" quote=""/>
+            <type label="Serial" length="0" sql="SERIAL" re="SERIAL4" fk="Integer" quote=""/>
+            <type label="Big Serial" length="0" sql="BIGSERIAL" re="SERIAL8" fk="Big Integer" quote=""/>
+            <type label="Real" length="0" sql="BIGINT" quote=""/>
+            <type label="Single precision" length="0" sql="FLOAT" quote=""/>
+            <type label="Double precision" length="0" sql="DOUBLE" re="DOUBLE" quote=""/>
+        </group>
+
+        <group label="Character" color="rgb(255,200,200)">
+            <type label="Char" length="1" sql="CHAR" quote="'"/>
+            <type label="Varchar" length="1" sql="VARCHAR" re="CHARACTER VARYING" quote="'"/>
+            <type label="Text" length="0" sql="TEXT" quote="'"/>
+            <type label="Binary" length="1" sql="BYTEA" quote="'"/>
+            <type label="Boolean" length="0" sql="BOOLEAN" quote="'"/>
+        </group>
+
+        <group label="Date &amp; Time" color="rgb(200,255,200)">
+            <type label="Date" length="0" sql="DATE" quote="'"/>
+            <type label="Time" length="1" sql="TIME" quote="'"/>
+            <type label="Time w/ TZ" length="0" sql="TIME WITH TIME ZONE" quote="'"/>
+            <type label="Interval" length="1" sql="INTERVAL" quote="'"/>
+            <type label="Timestamp" length="1" sql="TIMESTAMP" quote="'"/>
+            <type label="Timestamp w/ TZ" length="0" sql="TIMESTAMP WITH TIME ZONE" quote="'"/>
+            <type label="Timestamp wo/ TZ" length="0" sql="TIMESTAMP WITHOUT TIME ZONE" quote="'"/>
+        </group>
+
+        <group label="Miscellaneous" color="rgb(200,200,255)">
+            <type label="XML" length="1" sql="XML" quote="'"/>
+            <type label="Bit" length="1" sql="BIT" quote="'"/>
+            <type label="Bit Varying" length="1" sql="VARBIT" re="BIT VARYING" quote="'"/>
+            <type label="Inet Host Addr" length="0" sql="INET" quote="'"/>
+            <type label="Inet CIDR Addr" length="0" sql="CIDR" quote="'"/>
+            <type label="Geometry" length="0" sql="GEOMETRY" quote="'"/>
+        </group>
+    </datatypes>
+    <table x="499" y="272" name="user_profile">
+        <row name="user_id" null="0" autoincrement="1">
+            <datatype>INTEGER</datatype>
+        </row>
+        <row name="status" null="1" autoincrement="0">
+            <datatype>SMALLINT</datatype>
+            <default>NULL</default>
+            <comment>-1 - deleted, 0 - inactive, 1 - active, 2 - verifying</comment>
+        </row>
+        <row name="username" null="0" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+        </row>
+        <row name="password" null="0" autoincrement="0">
+            <datatype>VARCHAR(64)</datatype>
+        </row>
+        <row name="fullname" null="1" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="nickname" null="1" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="birthday" null="1" autoincrement="0">
+            <datatype>DATE</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="gender" null="1" autoincrement="0">
+            <datatype>CHAR(1)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="createdOn" null="0" autoincrement="0">
+            <datatype>DATE</datatype>
+            <default>'CURRENT_DATE'</default>
+        </row>
+        <row name="updatedOn" null="1" autoincrement="0">
+            <datatype>DATE</datatype>
+            <default>'CURRENT_DATE'</default>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>user_id</part>
+        </key>
+    </table>
+    <table x="100" y="74" name="user_contact">
+        <row name="user_id" null="0" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <relation table="user_profile" row="user_id" />
+        </row>
+        <row name="address" null="1" autoincrement="0">
+            <datatype>VARCHAR(512)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="phone1" null="1" autoincrement="0">
+            <datatype>VARCHAR(16)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="phone2" null="1" autoincrement="0">
+            <datatype>VARCHAR(16)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="mail" null="1" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="mail2" null="1" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+            <default>NULL</default>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>user_id</part>
+        </key>
+    </table>
+    <table x="433" y="32" name="ref_media">
+        <row name="media_id" null="0" autoincrement="1">
+            <datatype>SMALLINT</datatype>
+        </row>
+        <row name="media_name" null="0" autoincrement="0">
+            <datatype>VARCHAR(64)</datatype>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>media_id</part>
+        </key>
+    </table>
+    <table x="665" y="28" name="user_media">
+        <row name="id" null="0" autoincrement="1">
+            <datatype>INTEGER</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="user_id" null="0" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <relation table="user_profile" row="user_id" />
+        </row>
+        <row name="media_id" null="1" autoincrement="0">
+            <datatype>SMALLINT</datatype>
+            <default>NULL</default>
+            <relation table="ref_media" row="media_id" />
+        </row>
+        <row name="url" null="1" autoincrement="0">
+            <datatype>VARCHAR(1024)</datatype>
+            <default>NULL</default>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>id</part>
+        </key>
+        <key type="UNIQUE" name="combo_1">
+            <part>user_id</part>
+            <part>media_id</part>
+        </key>
+    </table>
+    <table x="243" y="239" name="user_info">
+        <row name="user_id" null="0" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <relation table="user_profile" row="user_id" />
+        </row>
+        <row name="brief_description" null="1" autoincrement="0">
+            <datatype>TEXT</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="education" null="1" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="position" null="1" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="company_name" null="1" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+            <default>NULL</default>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>user_id</part>
+        </key>
+    </table>
+    <table x="860" y="397" name="post">
+        <row name="post_id" null="0" autoincrement="1">
+            <datatype>BIGSERIAL</datatype>
+        </row>
+        <row name="user_id" null="0" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <relation table="user_profile" row="user_id" />
+        </row>
+        <row name="status" null="0" autoincrement="0">
+            <datatype>SMALLINT</datatype>
+            <comment>-1 -deleted, 0 - inactive, 1 - active, 2 - not publish</comment>
+        </row>
+        <row name="title" null="1" autoincrement="0">
+            <datatype>VARCHAR(512)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="content" null="1" autoincrement="0">
+            <datatype>TEXT</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="createdAt" null="0" autoincrement="0">
+            <datatype>TIMESTAMP</datatype>
+            <default>CURRENT_TIMESTAMP</default>
+        </row>
+        <row name="updatedAt" null="1" autoincrement="0">
+            <datatype>TIMESTAMP</datatype>
+            <default>NULL</default>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>post_id</part>
+        </key>
+    </table>
+    <table x="299" y="684" name="ref_topic">
+        <row name="topic_id" null="0" autoincrement="1">
+            <datatype>INTEGER</datatype>
+        </row>
+        <row name="topic_name" null="0" autoincrement="0">
+            <datatype>VARCHAR(64)</datatype>
+        </row>
+        <row name="description" null="0" autoincrement="0">
+            <datatype>TEXT</datatype>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>topic_id</part>
+        </key>
+    </table>
+    <table x="839" y="660" name="post_topic">
+        <row name="id" null="0" autoincrement="1">
+            <datatype>INTEGER</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="post_id" null="0" autoincrement="0">
+            <datatype>BIGINT</datatype>
+            <relation table="post" row="post_id" />
+        </row>
+        <row name="topic_id" null="0" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <relation table="ref_topic" row="topic_id" />
+        </row>
+        <row name="user_id" null="0" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <relation table="user_profile" row="user_id" />
+        </row>
+        <key type="PRIMARY" name="">
+            <part>id</part>
+        </key>
+        <key type="UNIQUE" name="combo_1">
+            <part>topic_id</part>
+            <part>post_id</part>
+        </key>
+    </table>
+    <table x="247" y="545" name="ref_skill">
+        <row name="skill_id" null="0" autoincrement="1">
+            <datatype>INTEGER</datatype>
+        </row>
+        <row name="skill_name" null="0" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>skill_id</part>
+        </key>
+    </table>
+    <table x="266" y="432" name="user_skill">
+        <row name="id" null="0" autoincrement="1">
+            <datatype>INTEGER</datatype>
+        </row>
+        <row name="user_id" null="0" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <relation table="user_profile" row="user_id" />
+        </row>
+        <row name="skill_id" null="0" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <relation table="ref_skill" row="skill_id" />
+        </row>
+        <key type="PRIMARY" name="">
+            <part>id</part>
+        </key>
+        <key type="UNIQUE" name="combo_1">
+            <part>user_id</part>
+            <part>skill_id</part>
+        </key>
+    </table>
+    <table x="816" y="139" name="user_experience">
+        <row name="id" null="0" autoincrement="1">
+            <datatype>INTEGER</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="user_id" null="0" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <relation table="user_profile" row="user_id" />
+        </row>
+        <row name="description" null="1" autoincrement="0">
+            <datatype>INTEGER</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="updatedAt" null="1" autoincrement="0">
+            <datatype>TIMESTAMP</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="company_name" null="1" autoincrement="0">
+            <datatype>VARCHAR(128)</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="startedOn" null="1" autoincrement="0">
+            <datatype>DATE</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="endedOn" null="1" autoincrement="0">
+            <datatype>DATE</datatype>
+            <default>NULL</default>
+        </row>
+        <row name="is_current" null="1" autoincrement="0">
+            <datatype>CHAR(1)</datatype>
+            <default>NULL</default>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>id</part>
+        </key>
+    </table>
+</sql>
