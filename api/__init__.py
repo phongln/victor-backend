@@ -7,7 +7,7 @@ from api.config import get_config
 def create_app():
     app = Flask(__name__)
     config = get_config()
-    app.config.from_object(config())
+    app.config.from_object(config)
 
     with app.app_context():
         from api.database import db, ma
