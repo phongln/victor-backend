@@ -1,5 +1,3 @@
-from api.resources import api
-from api.database import db, ma
 import os
 from flask import Flask
 
@@ -11,11 +9,15 @@ def create_app():
     config = get_config()
     app.config.from_object(config())
 
-    db.init_app(app)
-    ma.init_app(app)
-    api.init_app(app)
+    with app.app_context():
+        from api.database import db, ma
+        db.init_app(app)
+        ma.init_app(app)
 
-    from api.resources.user import user_bp
-    app.register_blueprint(user_bp)
+        from api.resources import api
+        api.init_app(app)
+
+        from api.resources.user import user_bp
+        app.register_blueprint(user_bp)
 
     return app
