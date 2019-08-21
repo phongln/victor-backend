@@ -1,4 +1,3 @@
-import os
 from flask import Flask
 
 from api.config import get_config
