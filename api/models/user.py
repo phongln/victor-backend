@@ -1,5 +1,4 @@
 from sqlalchemy import orm, Table
-from marshmallow_sqlalchemy import ModelSchema
 
 from api.database import db, ma
 
