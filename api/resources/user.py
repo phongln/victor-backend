@@ -4,8 +4,8 @@ from flask_restful import Resource
 from sqlalchemy.orm import exc as orm_exc
 import traceback
 
-from api.database import load_session
-from api.models.user import UserProfile, ViewUserProfile
+from api.database import get_session
+from api.models.user import ViewUserProfile
 
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
@@ -31,16 +31,17 @@ def catch_exception(func):
 
 @user_bp.route('/<int:user_id>', strict_slashes=False)
 @catch_exception
-def get_user(user_id):
-    session = load_session()
+@get_session
+def get_user(session, user_id):
     user = session.query(ViewUserProfile).filter_by(user_id=user_id).one()
+
     return ViewUserProfile.jsonify(user)
 
 
 @user_bp.route('/', strict_slashes=False)
 @catch_exception
-def get_users():
-    session = load_session()
+@get_session
+def get_user_all(session):
     users = session.query(ViewUserProfile).all()
 
     return ViewUserProfile.jsonify(users, many=True)

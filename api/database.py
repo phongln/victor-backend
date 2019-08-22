@@ -1,3 +1,4 @@
+from functools import wraps
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -10,6 +11,14 @@ ma = Marshmallow()
 
 def load_session():
     Session = sessionmaker(bind=db.engine)
-    session = Session()
 
-    return session
+    return Session()
+
+
+def get_session(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        session = load_session()
+        return func(session, *args, **kwargs)
+
+    return wrapper
