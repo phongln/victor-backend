@@ -42,4 +42,4 @@ class RefTopic(BaseModel):
 class RefTopicSchema(BaseSchema):
     class Meta:
         model = RefTopic
-        fields = ['topic_id', 'topic_name', 'descriptions']
+        fields = ['topic_id', 'topic_name', 'description']
