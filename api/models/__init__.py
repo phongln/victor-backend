@@ -38,8 +38,10 @@ class BaseSchema(ma.Schema):
 
 
 def apply_schema(schema_name):
-    def wrapper(cls):
-        cls.schema_name = schema_name
-        return cls
-
-    return wrapper
+    def inner_class(cls):
+        @wraps(cls)
+        def wrapper():
+            cls.schema_name = schema_name
+            return cls
+        return wrapper()
+    return inner_class
