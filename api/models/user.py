@@ -1,5 +1,4 @@
 from sqlalchemy import orm, Table, Column, Integer, ForeignKey
-from marshmallow import fields as ma_fields
 
 from api.database import db, ma
 
