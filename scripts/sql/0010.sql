@@ -15,18 +15,6 @@ CREATE TABLE user_profile (
 ALTER TABLE user_profile ADD CONSTRAINT user_profile_pkey PRIMARY KEY (user_id);
 COMMENT ON COLUMN "user_profile"."status" IS '-1 - deleted, 0 - inactive, 1 - active, 2 - verifying';
 
-CREATE TABLE user_contact (
- user_id INTEGER NOT NULL,
- address1 VARCHAR(512),
- address2 VARCHAR(512),
- phone1 VARCHAR(16),
- phone2 VARCHAR(16),
- mail VARCHAR(128),
- mail2 VARCHAR(128)
-);
-
-
-ALTER TABLE user_contact ADD CONSTRAINT user_contact_pkey PRIMARY KEY (user_id);
 
 CREATE TABLE ref_media (
  media_id BIGSERIAL NOT NULL,
@@ -124,7 +112,24 @@ CREATE TABLE user_experience (
 
 ALTER TABLE user_experience ADD CONSTRAINT user_experience_pkey PRIMARY KEY (id);
 
-ALTER TABLE user_contact ADD CONSTRAINT user_contact_user_id_fkey FOREIGN KEY (user_id) REFERENCES user_profile(user_id);
+CREATE TABLE ref_contact (
+ contact_type_id BIGSERIAL NOT NULL,
+ contact_type VARCHAR(64) NOT NULL
+);
+
+
+ALTER TABLE ref_contact ADD CONSTRAINT ref_contact_pkey PRIMARY KEY (contact_type_id);
+
+
+CREATE TABLE ref_contact (
+ contact_type_id BIGSERIAL NOT NULL,
+ contact_type VARCHAR(64) NOT NULL
+);
+
+
+ALTER TABLE ref_contact ADD CONSTRAINT ref_contact_pkey PRIMARY KEY (contact_type_id);
+
+
 ALTER TABLE user_media ADD CONSTRAINT user_media_user_id_fkey FOREIGN KEY (user_id) REFERENCES user_profile(user_id);
 ALTER TABLE user_media ADD CONSTRAINT user_media_media_id_fkey FOREIGN KEY (media_id) REFERENCES ref_media(media_id);
 ALTER TABLE user_info ADD CONSTRAINT user_info_user_id_fkey FOREIGN KEY (user_id) REFERENCES user_profile(user_id);

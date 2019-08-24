@@ -2,18 +2,14 @@ from functools import wraps
 from flask import Blueprint, abort
 from flask_restful import Resource
 from sqlalchemy.orm import exc as orm_exc
+from marshmallow import pprint
 import traceback
 
 from api.database import get_session
-from api.models.user import ViewUserProfile
-
+from api.models.user import ViewUserProfile, ViewUserContact, UserInfoAll
+from api.models.user import UserInfoAllSchema, ViewUserContactSchema
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
-
-
-class UserResource(Resource):
-    def get(self, user_id):
-        return get_user(user_id)
 
 
 def catch_exception(func):
@@ -29,19 +25,31 @@ def catch_exception(func):
     return wrapper
 
 
-@user_bp.route('/<int:user_id>', strict_slashes=False)
-@catch_exception
-@get_session
-def get_user(session, user_id):
-    user = session.query(ViewUserProfile).filter_by(user_id=user_id).one()
-
-    return ViewUserProfile.jsonify(user)
-
-
 @user_bp.route('/', strict_slashes=False)
 @catch_exception
 @get_session
 def get_user_all(session):
     users = session.query(ViewUserProfile).all()
+    session.commit()
 
     return ViewUserProfile.jsonify(users, many=True)
+
+
+@user_bp.route('/<int:user_id>', strict_slashes=False)
+@catch_exception
+@get_session
+def get_user(session, user_id):
+    user_info_all = session.query(UserInfoAll).filter_by(user_id=user_id).one()
+    session.commit()
+
+    return user_info_all.json()
+
+
+@user_bp.route('/<int:user_id>/contact', strict_slashes=False)
+@catch_exception
+@get_session
+def get_user_contact(session, user_id):
+    contacts = session.query(ViewUserContact).filter_by(user_id=user_id).all()
+    session.commit()
+
+    return ViewUserContact.jsonify(contacts, many=True)
