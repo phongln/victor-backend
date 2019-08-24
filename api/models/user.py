@@ -18,9 +18,8 @@ class BaseModel(db.Model):
         return ma_schema(many=many).jsonify(respone)
 
     def json(self, many=False):
-        ma_class = self.__class__ if not many else self[0].__class__
-        ma_schema = ma_class.get_ma_schema()
-        return ma_schema().jsonify(self, many=many)
+        ma_schema = self.__class__.get_ma_schema()
+        return ma_schema(many=many).jsonify(self)
 
 
 class UserProfile(BaseModel):
