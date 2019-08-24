@@ -39,7 +39,8 @@ class BaseSchema(ma.Schema):
         return cls.Meta.fields + fields
 
 
-def apply_schema(schema_name):
+def apply_schema(schema_name: str) -> 'Model':
+    """Add schema name string to class"""
     def inner_class(cls):
         @wraps(cls)
         def wrapper():
