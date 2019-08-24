@@ -1,4 +1,5 @@
 from api.database import db, ma
+from functools import wraps
 
 
 class BaseModel(db.Model):
@@ -8,7 +9,13 @@ class BaseModel(db.Model):
 
     @classmethod
     def get_ma_schema(cls):
-        pass
+        module_name = cls.__module__
+        schema_name = cls.schema_name
+
+        import sys
+        ma_schema = getattr(sys.modules[module_name], schema_name)
+
+        return ma_schema
 
     @classmethod
     def jsonify(cls, respone, many=False):
@@ -17,13 +24,22 @@ class BaseModel(db.Model):
 
     def json(self, many=False):
         ma_schema = self.__class__.get_ma_schema()
+
         return ma_schema(many=many).jsonify(self)
 
 
 class BaseSchema(ma.Schema):
     class Meta:
-        pass
+        fields = []
 
     @classmethod
     def merge_fields(cls, fields=[]):
         return cls.Meta.fields + fields
+
+
+def apply_schema(schema_name):
+    def wrapper(cls):
+        cls.schema_name = schema_name
+        return cls
+
+    return wrapper
