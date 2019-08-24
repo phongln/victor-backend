@@ -1,34 +1,12 @@
 from sqlalchemy import orm, Table, Column, Integer, ForeignKey
-from marshmallow import fields as ma_fields
 
 from api.database import db, ma
+from api.models import BaseModel, BaseSchema, apply_schema
 
 
-class BaseModel(db.Model):
-    __abstract__ = True
-    __table_args__ = {'autoload': True,
-                      'autoload_with': db.engine, 'extend_existing': True}
-
-    @classmethod
-    def get_ma_schema(cls):
-        pass
-
-    @classmethod
-    def jsonify(cls, respone, many=False):
-        ma_schema = cls.get_ma_schema()
-        return ma_schema(many=many).jsonify(respone)
-
-    def json(self, many=False):
-        ma_class = self.__class__ if not many else self[0].__class__
-        ma_schema = ma_class.get_ma_schema()
-        return ma_schema().jsonify(self, many=many)
-
-
+@apply_schema('UserProfileSchema')
 class UserProfile(BaseModel):
     __tablename__ = 'user_profile'
-
-    def get_ma_schema():
-        return UserProfileSchema
 
 
 class UserProfileSchema(ma.Schema):
@@ -39,17 +17,14 @@ class UserProfileSchema(ma.Schema):
 
 # View user profile
 
-
+@apply_schema('ViewUserProfileSchema')
 class ViewUserProfile(BaseModel):
     __table__ = Table('v_user_profile', db.metadata,
                       Column('user_id', Integer, primary_key=True),
                       **BaseModel.__table_args__)
 
-    def get_ma_schema():
-        return ViewUserProfileSchema
 
-
-class ViewUserProfileSchema(ma.Schema):
+class ViewUserProfileSchema(BaseSchema):
     class Meta:
         model = ViewUserProfile
         fields = ['user_id', 'status', 'username',
@@ -57,9 +32,10 @@ class ViewUserProfileSchema(ma.Schema):
                   'createdon', 'updatedon', 'brief_description',
                   'education', 'position', 'company_name']
 
+
 # View user contact
 
-
+@apply_schema('ViewUserContactSchema')
 class ViewUserContact(BaseModel):
     columns = (
         Column('id', Integer, primary_key=True),
@@ -71,29 +47,24 @@ class ViewUserContact(BaseModel):
                       *columns,
                       **BaseModel.__table_args__)
 
-    def get_ma_schema():
-        return ViewUserContactSchema
 
-
-class ViewUserContactSchema(ma.Schema):
+class ViewUserContactSchema(BaseSchema):
     class Meta:
         model = ViewUserContact
         fields = ['id', 'user_id', 'contact_type', 'contact_name', 'ord_num']
 
+
 # Get all info
 
-
+@apply_schema('UserInfoAllSchema')
 class UserInfoAll(ViewUserProfile):
     __table__ = ViewUserProfile.__table__
 
-    def get_ma_schema():
-        return UserInfoAllSchema
 
-
-class UserInfoAllSchema(ma.Schema):
+class UserInfoAllSchema(BaseSchema):
 
     class Meta:
         model = UserInfoAll
-        fields = ViewUserProfileSchema.Meta.fields + ['contacts']
+        fields = ViewUserProfileSchema.merge_fields(['contacts'])
     contacts = ma.Nested(ViewUserContactSchema,
                          many=True, exclude=('user_id',))
