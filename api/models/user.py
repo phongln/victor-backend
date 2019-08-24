@@ -1,25 +1,7 @@
 from sqlalchemy import orm, Table, Column, Integer, ForeignKey
 
 from api.database import db, ma
-
-
-class BaseModel(db.Model):
-    __abstract__ = True
-    __table_args__ = {'autoload': True,
-                      'autoload_with': db.engine, 'extend_existing': True}
-
-    @classmethod
-    def get_ma_schema(cls):
-        pass
-
-    @classmethod
-    def jsonify(cls, respone, many=False):
-        ma_schema = cls.get_ma_schema()
-        return ma_schema(many=many).jsonify(respone)
-
-    def json(self, many=False):
-        ma_schema = self.__class__.get_ma_schema()
-        return ma_schema(many=many).jsonify(self)
+from api.models import BaseModel, BaseSchema
 
 
 class UserProfile(BaseModel):
@@ -73,10 +55,11 @@ class ViewUserContact(BaseModel):
         return ViewUserContactSchema
 
 
-class ViewUserContactSchema(ma.Schema):
+class ViewUserContactSchema(BaseSchema):
     class Meta:
         model = ViewUserContact
         fields = ['id', 'user_id', 'contact_type', 'contact_name', 'ord_num']
+
 
 # Get all info
 
