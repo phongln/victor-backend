@@ -85,36 +85,24 @@
             <part>user_id</part>
         </key>
     </table>
-    <table x="100" y="74" name="user_contact">
+    <table x="133" y="74" name="user_contact">
         <row name="user_id" null="0" autoincrement="0">
             <datatype>INTEGER</datatype>
             <relation table="user_profile" row="user_id" />
         </row>
-        <row name="address" null="1" autoincrement="0">
+        <row name="contact_type_id" null="0" autoincrement="0">
+            <datatype>SMALLINT</datatype>
+            <relation table="ref_contact" row="contact_type_id" />
+        </row>
+        <row name="contact_name" null="1" autoincrement="0">
             <datatype>VARCHAR(512)</datatype>
-            <default>NULL</default>
-        </row>
-        <row name="phone1" null="1" autoincrement="0">
-            <datatype>VARCHAR(16)</datatype>
-            <default>NULL</default>
-        </row>
-        <row name="phone2" null="1" autoincrement="0">
-            <datatype>VARCHAR(16)</datatype>
-            <default>NULL</default>
-        </row>
-        <row name="mail" null="1" autoincrement="0">
-            <datatype>VARCHAR(128)</datatype>
-            <default>NULL</default>
-        </row>
-        <row name="mail2" null="1" autoincrement="0">
-            <datatype>VARCHAR(128)</datatype>
             <default>NULL</default>
         </row>
         <key type="PRIMARY" name="">
             <part>user_id</part>
         </key>
     </table>
-    <table x="433" y="32" name="ref_media">
+    <table x="380" y="44" name="ref_media">
         <row name="media_id" null="0" autoincrement="1">
             <datatype>SMALLINT</datatype>
         </row>
@@ -125,7 +113,7 @@
             <part>media_id</part>
         </key>
     </table>
-    <table x="665" y="28" name="user_media">
+    <table x="572" y="23" name="user_media">
         <row name="id" null="0" autoincrement="1">
             <datatype>INTEGER</datatype>
             <default>NULL</default>
@@ -176,7 +164,7 @@
             <part>user_id</part>
         </key>
     </table>
-    <table x="860" y="397" name="post">
+    <table x="832" y="395" name="post">
         <row name="post_id" null="0" autoincrement="1">
             <datatype>BIGSERIAL</datatype>
         </row>
@@ -208,7 +196,7 @@
             <part>post_id</part>
         </key>
     </table>
-    <table x="299" y="684" name="ref_topic">
+    <table x="416" y="608" name="ref_topic">
         <row name="topic_id" null="0" autoincrement="1">
             <datatype>INTEGER</datatype>
         </row>
@@ -222,7 +210,7 @@
             <part>topic_id</part>
         </key>
     </table>
-    <table x="839" y="660" name="post_topic">
+    <table x="640" y="581" name="post_topic">
         <row name="id" null="0" autoincrement="1">
             <datatype>INTEGER</datatype>
             <default>NULL</default>
@@ -247,7 +235,7 @@
             <part>post_id</part>
         </key>
     </table>
-    <table x="247" y="545" name="ref_skill">
+    <table x="123" y="443" name="ref_skill">
         <row name="skill_id" null="0" autoincrement="1">
             <datatype>INTEGER</datatype>
         </row>
@@ -313,6 +301,17 @@
         </row>
         <key type="PRIMARY" name="">
             <part>id</part>
+        </key>
+    </table>
+    <table x="58" y="212" name="ref_contact">
+        <row name="contact_type_id" null="0" autoincrement="1">
+            <datatype>SMALLINT</datatype>
+        </row>
+        <row name="contact_type" null="0" autoincrement="0">
+            <datatype>VARCHAR(64)</datatype>
+        </row>
+        <key type="PRIMARY" name="">
+            <part>contact_type_id</part>
         </key>
     </table>
 </sql>
