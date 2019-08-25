@@ -13,10 +13,11 @@ def create_app():
         db.init_app(app)
         ma.init_app(app)
 
-        from api.resources import api
+        from api.resources import api, init_blueprint
         api.init_app(app)
-
-        from api.resources.user import user_bp
-        app.register_blueprint(user_bp)
+        init_blueprint(app)
 
     return app
+
+
+app = create_app()

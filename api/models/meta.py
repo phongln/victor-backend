@@ -1,4 +1,6 @@
-from api.models import BaseModel, BaseSchema, apply_schema
+from sqlalchemy import orm, Table, Column, Integer, ForeignKey, String
+
+from api.models import BaseModel, BaseSchema, apply_schema, getTable
 
 
 @apply_schema('RefContactSchema')
@@ -14,7 +16,7 @@ class RefContactSchema(BaseSchema):
 
 @apply_schema('RefMediaSchema')
 class RefMedia(BaseModel):
-    __tablename__ = 'ref_meta'
+    __tablename__ = 'ref_media'
 
 
 class RefMediaSchema(BaseSchema):
@@ -43,3 +45,15 @@ class RefTopicSchema(BaseSchema):
     class Meta:
         model = RefTopic
         fields = ['topic_id', 'topic_name', 'description']
+
+
+@apply_schema('ViewAllRefTableSchema')
+class ViewAllRefTable(BaseModel):
+    columns = [Column('table_name', String(64), primary_key=True), ]
+    __table__ = getTable('v_all_ref_table', columns)
+
+
+class ViewAllRefTableSchema(BaseSchema):
+    class Meta:
+        model = ViewAllRefTable
+        fields = ['table_name', 'table_data']

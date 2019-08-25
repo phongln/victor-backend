@@ -1,8 +1,16 @@
-insert into ref_contact(contact_type_id, contact_type)
+insert into ref_contact(contact_type_id, contact_type, ord_num)
 values
-(1, 'phone'),
-(2, 'mail'),
-(3, 'address');
+(1, 'phone', 2),
+(2, 'mail', 3),
+(3, 'address', 1);
+
+insert into ref_media (media_id, media_name, ord_num)
+values 
+(1, 'github', 1),
+(2, 'skype', 2),
+(3, 'linkedin', 3),
+(4, 'reddit', 4);
+
 
 insert into user_profile (
  status ,
