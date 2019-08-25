@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 
 from api.config import get_config
 
@@ -9,6 +10,7 @@ def create_app():
     app.config.from_object(config)
 
     with app.app_context():
+        CORS(app)
         from api.database import db, ma
         db.init_app(app)
         ma.init_app(app)
