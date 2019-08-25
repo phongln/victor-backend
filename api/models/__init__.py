@@ -1,5 +1,7 @@
-from api.database import db, ma
 from functools import wraps
+from sqlalchemy import Table
+
+from api.database import db, ma
 
 
 class BaseModel(db.Model):
@@ -37,11 +39,16 @@ class BaseSchema(ma.Schema):
         return cls.Meta.fields + fields
 
 
-def apply_schema(schema_name):
+def apply_schema(schema_name: str) -> 'Model':
+    """Add schema name string to class"""
     def inner_class(cls):
         @wraps(cls)
         def wrapper():
-            cls.schema_name = schema_name
+            setattr(cls, 'schema_name', schema_name)
             return cls
         return wrapper()
     return inner_class
+
+
+def getTable(tablename, columns):
+    return Table(tablename, db.metadata, *columns, **BaseModel.__table_args__)

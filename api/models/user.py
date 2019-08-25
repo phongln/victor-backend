@@ -1,7 +1,7 @@
 from sqlalchemy import orm, Table, Column, Integer, ForeignKey
 
 from api.database import db, ma
-from api.models import BaseModel, BaseSchema, apply_schema
+from api.models import BaseModel, BaseSchema, apply_schema, getTable
 
 
 @apply_schema('UserProfileSchema')
@@ -19,9 +19,8 @@ class UserProfileSchema(ma.Schema):
 
 @apply_schema('ViewUserProfileSchema')
 class ViewUserProfile(BaseModel):
-    __table__ = Table('v_user_profile', db.metadata,
-                      Column('user_id', Integer, primary_key=True),
-                      **BaseModel.__table_args__)
+    columns = [Column('user_id', Integer, primary_key=True)]
+    __table__ = getTable('v_user_profile', columns)
 
 
 class ViewUserProfileSchema(BaseSchema):
@@ -43,9 +42,7 @@ class ViewUserContact(BaseModel):
     )
     user_info = orm.relationship('ViewUserProfile', backref='contacts')
 
-    __table__ = Table('v_user_contact', db.metadata,
-                      *columns,
-                      **BaseModel.__table_args__)
+    __table__ = getTable('v_user_contact', columns)
 
 
 class ViewUserContactSchema(BaseSchema):

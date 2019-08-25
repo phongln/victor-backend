@@ -18,7 +18,8 @@ COMMENT ON COLUMN "user_profile"."status" IS '-1 - deleted, 0 - inactive, 1 - ac
 
 CREATE TABLE ref_media (
  media_id BIGSERIAL NOT NULL,
- media_name VARCHAR(64) NOT NULL
+ media_name VARCHAR(64) NOT NULL,
+ ord_num SMALLINT
 );
 
 
@@ -63,7 +64,8 @@ COMMENT ON COLUMN "post"."status" IS '-1 -deleted, 0 - inactive, 1 - active, 2 -
 CREATE TABLE ref_topic (
  topic_id BIGSERIAL NOT NULL,
  topic_name VARCHAR(64) NOT NULL,
- description TEXT NOT NULL
+ description TEXT NOT NULL,
+ ord_num SMALLINT
 );
 
 
@@ -82,7 +84,8 @@ ALTER TABLE post_topic ADD CONSTRAINT post_topic_combo1 UNIQUE (topic_id, post_i
 
 CREATE TABLE ref_skill (
  skill_id BIGSERIAL NOT NULL,
- skill_name VARCHAR(128) NOT NULL
+ skill_name VARCHAR(128) NOT NULL,
+ ord_num INTEGER
 );
 
 
@@ -114,7 +117,8 @@ ALTER TABLE user_experience ADD CONSTRAINT user_experience_pkey PRIMARY KEY (id)
 
 CREATE TABLE ref_contact (
  contact_type_id BIGSERIAL NOT NULL,
- contact_type VARCHAR(64) NOT NULL
+ contact_type VARCHAR(64) NOT NULL,
+ ord_num SMALLINT
 );
 
 
