@@ -12,6 +12,29 @@ values
 (4, 'reddit', 4);
 
 
+insert into ref_skill (skill_id, skill_name, ord_num)
+values 
+(1, 'python', 1),
+(2, 'react', 2),
+(3, 'mysql', 3),
+(4, 'elasticsearch', 4),
+(5, 'oracle', 5),
+(6, 'javascript', 6),
+(7, 'linux', 7);
+
+
+insert into ref_topic (topic_id, topic_name, description, ord_num)
+values 
+(1, 'python', 'description', 1),
+(2, 'react', 'description', 2),
+(3, 'mysql', 'description', 3),
+(4, 'elasticsearch', 'description', 4),
+(5, 'oracle', 'description', 5),
+(6, 'javascript', 'description', 6),
+(7, 'linux', 'description', 7);
+
+
+
 insert into user_profile (
  status ,
  username,
