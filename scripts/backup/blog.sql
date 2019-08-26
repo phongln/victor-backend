@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.5
+-- Dumped from database version 11.0
 -- Dumped by pg_dump version 11.5
 
 SET statement_timeout = 0;
@@ -19,6 +19,56 @@ SET row_security = off;
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: ref_contact; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.ref_contact (
+    contact_type_id bigint NOT NULL,
+    contact_type character varying(64) NOT NULL,
+    ord_num smallint
+);
+
+
+ALTER TABLE public.ref_contact OWNER TO blog_api;
+
+--
+-- Name: user_contact; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.user_contact (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    contact_type_id smallint NOT NULL,
+    contact_name character varying(512),
+    ord_num smallint DEFAULT 1 NOT NULL
+);
+
+
+ALTER TABLE public.user_contact OWNER TO blog_api;
+
+--
+-- Name: json_user_contact; Type: MATERIALIZED VIEW; Schema: public; Owner: blog_api
+--
+
+CREATE MATERIALIZED VIEW public.json_user_contact AS
+ WITH src_contact AS (
+         SELECT t1.id,
+            t1.user_id,
+            ((t2.contact_type)::text || t1.ord_num) AS contact_alias,
+            t1.contact_name
+           FROM (public.user_contact t1
+             JOIN public.ref_contact t2 ON ((t1.contact_type_id = t2.contact_type_id)))
+        )
+ SELECT t.user_id,
+    json_object(array_agg(t.contact_alias), (array_agg(t.contact_name))::text[]) AS json_contacts
+   FROM src_contact t
+  GROUP BY t.user_id
+  WITH NO DATA;
+
+
+ALTER TABLE public.json_user_contact OWNER TO blog_api;
 
 --
 -- Name: post; Type: TABLE; Schema: public; Owner: blog_api
@@ -99,19 +149,6 @@ ALTER TABLE public.post_topic_id_seq OWNER TO blog_api;
 
 ALTER SEQUENCE public.post_topic_id_seq OWNED BY public.post_topic.id;
 
-
---
--- Name: ref_contact; Type: TABLE; Schema: public; Owner: blog_api
---
-
-CREATE TABLE public.ref_contact (
-    contact_type_id bigint NOT NULL,
-    contact_type character varying(64) NOT NULL,
-    ord_num smallint
-);
-
-
-ALTER TABLE public.ref_contact OWNER TO blog_api;
 
 --
 -- Name: ref_contact_contact_type_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
@@ -236,21 +273,6 @@ ALTER TABLE public.ref_topic_topic_id_seq OWNER TO blog_api;
 
 ALTER SEQUENCE public.ref_topic_topic_id_seq OWNED BY public.ref_topic.topic_id;
 
-
---
--- Name: user_contact; Type: TABLE; Schema: public; Owner: blog_api
---
-
-CREATE TABLE public.user_contact (
-    id bigint NOT NULL,
-    user_id integer NOT NULL,
-    contact_type_id smallint NOT NULL,
-    contact_name character varying(512),
-    ord_num smallint DEFAULT 1 NOT NULL
-);
-
-
-ALTER TABLE public.user_contact OWNER TO blog_api;
 
 --
 -- Name: user_contact_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
@@ -701,8 +723,8 @@ COPY public.user_media (id, user_id, media_id, url) FROM stdin;
 --
 
 COPY public.user_profile (user_id, status, username, password, fullname, nickname, birthday, gender, createdon, updatedon) FROM stdin;
-1	1	vinhpham	afdd0b4ad2ec172c586e2150770fbf9e	Pham Tan Vinh	Victor Pham	1994-12-08	m	2019-08-26	2019-08-26
-2	1	vinhpham	afdd0b4ad2ec172c586e2150770fbf9e	Pham Tan Vinh	Victor Pham	1994-12-08	m	2019-08-26	2019-08-26
+1	1	vinhpham	afdd0b4ad2ec172c586e2150770fbf9e	Pham Tan Vinh	Victor Pham	1994-12-08	m	2019-08-24	2019-08-24
+2	1	vinhpham	afdd0b4ad2ec172c586e2150770fbf9e	Pham Tan Vinh	Victor Pham	1994-12-08	m	2019-08-24	2019-08-24
 \.
 
 
@@ -912,17 +934,10 @@ ALTER TABLE ONLY public.user_skill
 
 
 --
--- Name: id_uniq; Type: INDEX; Schema: public; Owner: blog_api
+-- Name: json_user_contact_user_id_uniq; Type: INDEX; Schema: public; Owner: blog_api
 --
 
-CREATE UNIQUE INDEX id_uniq ON public.v_user_contact USING btree (id);
-
-
---
--- Name: table_name_uniq; Type: INDEX; Schema: public; Owner: blog_api
---
-
-CREATE UNIQUE INDEX table_name_uniq ON public.v_all_ref_table USING btree (table_name);
+CREATE UNIQUE INDEX json_user_contact_user_id_uniq ON public.json_user_contact USING btree (user_id);
 
 
 --
@@ -933,10 +948,24 @@ CREATE INDEX user_contact_combo ON public.user_contact USING btree (user_id, con
 
 
 --
--- Name: user_id_uniq; Type: INDEX; Schema: public; Owner: blog_api
+-- Name: v_all_ref_table_table_name_uniq; Type: INDEX; Schema: public; Owner: blog_api
 --
 
-CREATE UNIQUE INDEX user_id_uniq ON public.v_user_profile USING btree (user_id);
+CREATE UNIQUE INDEX v_all_ref_table_table_name_uniq ON public.v_all_ref_table USING btree (table_name);
+
+
+--
+-- Name: v_user_contact_id_uniq; Type: INDEX; Schema: public; Owner: blog_api
+--
+
+CREATE UNIQUE INDEX v_user_contact_id_uniq ON public.v_user_contact USING btree (id);
+
+
+--
+-- Name: v_user_profile_user_id_uniq; Type: INDEX; Schema: public; Owner: blog_api
+--
+
+CREATE UNIQUE INDEX v_user_profile_user_id_uniq ON public.v_user_profile USING btree (user_id);
 
 
 --
@@ -945,14 +974,6 @@ CREATE UNIQUE INDEX user_id_uniq ON public.v_user_profile USING btree (user_id);
 
 ALTER TABLE ONLY public.post_topic
     ADD CONSTRAINT post_topic_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.post(post_id);
-
-
---
--- Name: post_topic post_topic_topic_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
---
-
-ALTER TABLE ONLY public.post_topic
-    ADD CONSTRAINT post_topic_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES public.ref_topic(topic_id);
 
 
 --
@@ -969,14 +990,6 @@ ALTER TABLE ONLY public.post_topic
 
 ALTER TABLE ONLY public.post
     ADD CONSTRAINT post_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profile(user_id);
-
-
---
--- Name: user_contact user_contact_contact_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
---
-
-ALTER TABLE ONLY public.user_contact
-    ADD CONSTRAINT user_contact_contact_type_id_fkey FOREIGN KEY (contact_type_id) REFERENCES public.ref_contact(contact_type_id);
 
 
 --
@@ -1004,14 +1017,6 @@ ALTER TABLE ONLY public.user_info
 
 
 --
--- Name: user_media user_media_media_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
---
-
-ALTER TABLE ONLY public.user_media
-    ADD CONSTRAINT user_media_media_id_fkey FOREIGN KEY (media_id) REFERENCES public.ref_media(media_id);
-
-
---
 -- Name: user_media user_media_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
 --
 
@@ -1020,19 +1025,18 @@ ALTER TABLE ONLY public.user_media
 
 
 --
--- Name: user_skill user_skill_skill_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
---
-
-ALTER TABLE ONLY public.user_skill
-    ADD CONSTRAINT user_skill_skill_id_fkey FOREIGN KEY (skill_id) REFERENCES public.ref_skill(skill_id);
-
-
---
 -- Name: user_skill user_skill_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
 --
 
 ALTER TABLE ONLY public.user_skill
     ADD CONSTRAINT user_skill_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profile(user_id);
+
+
+--
+-- Name: json_user_contact; Type: MATERIALIZED VIEW DATA; Schema: public; Owner: blog_api
+--
+
+REFRESH MATERIALIZED VIEW public.json_user_contact;
 
 
 --
