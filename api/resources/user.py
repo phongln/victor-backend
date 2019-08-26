@@ -4,7 +4,7 @@ from marshmallow import pprint
 from api.utils import catch_exception
 from api.resources import LIMIT_ROWS
 from api.database import get_session
-from api.models.user import ViewUserContact, UserInfoAll
+from api.models.user import JsonUserContact, UserInfoAll
 
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
@@ -34,7 +34,7 @@ def get_user(session, user_id):
 @catch_exception
 @get_session
 def get_user_contact(session, user_id):
-    contacts = session.query(ViewUserContact).filter_by(user_id=user_id).all()
+    contacts = session.query(JsonUserContact).filter_by(user_id=user_id).all()
     session.commit()
 
-    return ViewUserContact.jsonify(contacts, many=True)
+    return JsonUserContact.jsonify(contacts, many=True)
