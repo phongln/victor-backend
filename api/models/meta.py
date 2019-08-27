@@ -1,6 +1,6 @@
 from sqlalchemy import orm, Table, Column, Integer, ForeignKey, String
 
-from api.models import BaseModel, BaseSchema, apply_schema, getTable
+from .base import BaseModel, BaseSchema, apply_schema, getTable
 
 
 @apply_schema('RefContactSchema')

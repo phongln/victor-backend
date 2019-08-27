@@ -24,8 +24,4 @@ def get_session(func=None, *deco_args, **deco_kwargs):
 def init_datatabase(app):
     db.init_app(app)
     db.Session = scoped_session(sessionmaker(bind=db.engine))
-    @app.teardown_appcontext
-    def shutdown_session(exception=None):
-        db.Session.remove()
-
     ma.init_app(app)

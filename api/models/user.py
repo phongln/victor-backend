@@ -2,7 +2,7 @@ from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import backref, relationship
 
 from api.database import db, ma
-from api.models import BaseModel, BaseSchema, apply_schema, getTable
+from .base import BaseModel, BaseSchema, apply_schema, getTable
 
 
 @apply_schema('UserProfileSchema')
