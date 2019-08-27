@@ -11,13 +11,11 @@ def create_app():
 
     with app.app_context():
         CORS(app)
-        from api.database import db, ma
-        db.init_app(app)
-        ma.init_app(app)
+        from api.database import init_datatabase
+        init_datatabase(app)
 
-        from api.resources import api, init_blueprint
-        api.init_app(app)
-        init_blueprint(app)
+        from api.resources import init_resources
+        init_resources(app)
 
     return app
 
