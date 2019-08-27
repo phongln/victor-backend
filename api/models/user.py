@@ -1,7 +1,7 @@
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import backref, relationship
+from marshmallow.fields import Nested
 
-from api.database import db, ma
 from .base import BaseModel, BaseSchema, apply_schema, getTable
 
 
@@ -10,7 +10,7 @@ class UserProfile(BaseModel):
     __tablename__ = 'user_profile'
 
 
-class UserProfileSchema(ma.Schema):
+class UserProfileSchema(BaseSchema):
     class Meta:
         fields = ('user_id', 'status', 'username', 'fullname',
                   'nickname', 'birthday', 'gender')
@@ -78,8 +78,8 @@ class JsonUserContact(BaseModel):
 
 
 class UserInfoAllSchema(BaseSchema):
-    contacts = ma.Nested('JsonUserContactSchema',
-                         exclude=('user_id', 'user_info'))
+    contacts = Nested('JsonUserContactSchema',
+                      exclude=('user_id', 'user_info'))
 
     class Meta:
         model = UserInfoAll
@@ -87,8 +87,8 @@ class UserInfoAllSchema(BaseSchema):
 
 
 class JsonUserContactSchema(BaseSchema):
-    user_info = ma.Nested('UserInfoAllSchema',
-                          only=('username',))
+    user_info = Nested('UserInfoAllSchema',
+                       only=('username',))
 
     class Meta:
         model = JsonUserContact
