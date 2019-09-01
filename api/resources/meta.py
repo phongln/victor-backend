@@ -4,6 +4,7 @@ from marshmallow import pprint
 from api.utils import catch_exception
 from api.resources import LIMIT_ROWS
 from api.database import get_session
+from api.models import jsonify_respone
 from api.models.meta import ViewAllRefTable
 
 
@@ -15,6 +16,5 @@ meta_bp = Blueprint('meta', __name__, url_prefix='/meta')
 @get_session
 def get_all_ref_table(session):
     all_ref_tables = session.query(ViewAllRefTable).all()
-    session.commit()
 
-    return ViewAllRefTable.jsonify(all_ref_tables, many=True)
+    return jsonify_respone(all_ref_tables, many=True)

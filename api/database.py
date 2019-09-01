@@ -16,7 +16,7 @@ def get_session(func=None, *deco_args, **deco_kwargs):
     @wraps(func)
     def wrapper(*args, **kwargs):
         session = db.Session()
-        return func(session, *args, **kwargs)
+        return func(session=session, *args, **kwargs)
 
     return wrapper
 
@@ -25,3 +25,7 @@ def init_datatabase(app):
     db.init_app(app)
     db.Session = scoped_session(sessionmaker(bind=db.engine))
     ma.init_app(app)
+
+    @app.teardown_request
+    def shutdown_session(respone):
+        db.Session.remove()
