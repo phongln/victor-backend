@@ -9,3 +9,7 @@ def init_blueprint(app):
     app.register_blueprint(user.user_bp)
     app.register_blueprint(post.post_bp)
     app.register_blueprint(meta.meta_bp)
+
+def init_resources(app):
+    api.init_app(app)
+    init_blueprint(app)

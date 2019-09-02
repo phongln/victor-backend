@@ -1,0 +1,1066 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 11.0
+-- Dumped by pg_dump version 11.5
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: ref_contact; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.ref_contact (
+    contact_type_id bigint NOT NULL,
+    contact_type character varying(64) NOT NULL,
+    ord_num smallint
+);
+
+
+ALTER TABLE public.ref_contact OWNER TO blog_api;
+
+--
+-- Name: user_contact; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.user_contact (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    contact_type_id smallint NOT NULL,
+    contact_name character varying(512),
+    ord_num smallint DEFAULT 1 NOT NULL
+);
+
+
+ALTER TABLE public.user_contact OWNER TO blog_api;
+
+--
+-- Name: json_user_contact; Type: MATERIALIZED VIEW; Schema: public; Owner: blog_api
+--
+
+CREATE MATERIALIZED VIEW public.json_user_contact AS
+ WITH src_contact AS (
+         SELECT t1.id,
+            t1.user_id,
+            ((t2.contact_type)::text || t1.ord_num) AS contact_alias,
+            t1.contact_name
+           FROM (public.user_contact t1
+             JOIN public.ref_contact t2 ON ((t1.contact_type_id = t2.contact_type_id)))
+        )
+ SELECT t.user_id,
+    json_object(array_agg(t.contact_alias), (array_agg(t.contact_name))::text[]) AS json_contacts
+   FROM src_contact t
+  GROUP BY t.user_id
+  WITH NO DATA;
+
+
+ALTER TABLE public.json_user_contact OWNER TO blog_api;
+
+--
+-- Name: post; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.post (
+    post_id bigint NOT NULL,
+    user_id integer NOT NULL,
+    status smallint NOT NULL,
+    title character varying(512),
+    content text,
+    createdat timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updatedat timestamp without time zone
+);
+
+
+ALTER TABLE public.post OWNER TO blog_api;
+
+--
+-- Name: COLUMN post.status; Type: COMMENT; Schema: public; Owner: blog_api
+--
+
+COMMENT ON COLUMN public.post.status IS '-1 -deleted, 0 - inactive, 1 - active, 2 - not publish';
+
+
+--
+-- Name: post_post_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.post_post_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.post_post_id_seq OWNER TO blog_api;
+
+--
+-- Name: post_post_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.post_post_id_seq OWNED BY public.post.post_id;
+
+
+--
+-- Name: post_topic; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.post_topic (
+    id bigint NOT NULL,
+    post_id bigint NOT NULL,
+    topic_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.post_topic OWNER TO blog_api;
+
+--
+-- Name: post_topic_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.post_topic_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.post_topic_id_seq OWNER TO blog_api;
+
+--
+-- Name: post_topic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.post_topic_id_seq OWNED BY public.post_topic.id;
+
+
+--
+-- Name: ref_contact_contact_type_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.ref_contact_contact_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.ref_contact_contact_type_id_seq OWNER TO blog_api;
+
+--
+-- Name: ref_contact_contact_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.ref_contact_contact_type_id_seq OWNED BY public.ref_contact.contact_type_id;
+
+
+--
+-- Name: ref_media; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.ref_media (
+    media_id bigint NOT NULL,
+    media_name character varying(64) NOT NULL,
+    ord_num smallint
+);
+
+
+ALTER TABLE public.ref_media OWNER TO blog_api;
+
+--
+-- Name: ref_media_media_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.ref_media_media_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.ref_media_media_id_seq OWNER TO blog_api;
+
+--
+-- Name: ref_media_media_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.ref_media_media_id_seq OWNED BY public.ref_media.media_id;
+
+
+--
+-- Name: ref_skill; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.ref_skill (
+    skill_id bigint NOT NULL,
+    skill_name character varying(128) NOT NULL,
+    ord_num integer
+);
+
+
+ALTER TABLE public.ref_skill OWNER TO blog_api;
+
+--
+-- Name: ref_skill_skill_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.ref_skill_skill_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.ref_skill_skill_id_seq OWNER TO blog_api;
+
+--
+-- Name: ref_skill_skill_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.ref_skill_skill_id_seq OWNED BY public.ref_skill.skill_id;
+
+
+--
+-- Name: ref_topic; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.ref_topic (
+    topic_id bigint NOT NULL,
+    topic_name character varying(64) NOT NULL,
+    description text NOT NULL,
+    ord_num smallint
+);
+
+
+ALTER TABLE public.ref_topic OWNER TO blog_api;
+
+--
+-- Name: ref_topic_topic_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.ref_topic_topic_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.ref_topic_topic_id_seq OWNER TO blog_api;
+
+--
+-- Name: ref_topic_topic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.ref_topic_topic_id_seq OWNED BY public.ref_topic.topic_id;
+
+
+--
+-- Name: user_contact_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.user_contact_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_contact_id_seq OWNER TO blog_api;
+
+--
+-- Name: user_contact_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.user_contact_id_seq OWNED BY public.user_contact.id;
+
+
+--
+-- Name: user_experience; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.user_experience (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    description integer,
+    updatedat timestamp without time zone,
+    company_name character varying(128),
+    startedon date,
+    endedon date,
+    is_current character(1)
+);
+
+
+ALTER TABLE public.user_experience OWNER TO blog_api;
+
+--
+-- Name: user_experience_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.user_experience_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_experience_id_seq OWNER TO blog_api;
+
+--
+-- Name: user_experience_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.user_experience_id_seq OWNED BY public.user_experience.id;
+
+
+--
+-- Name: user_info; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.user_info (
+    user_id integer NOT NULL,
+    brief_description text,
+    education character varying(128),
+    "position" character varying(128),
+    company_name character varying(128)
+);
+
+
+ALTER TABLE public.user_info OWNER TO blog_api;
+
+--
+-- Name: user_media; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.user_media (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    media_id smallint,
+    url character varying(1024)
+);
+
+
+ALTER TABLE public.user_media OWNER TO blog_api;
+
+--
+-- Name: user_media_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.user_media_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_media_id_seq OWNER TO blog_api;
+
+--
+-- Name: user_media_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.user_media_id_seq OWNED BY public.user_media.id;
+
+
+--
+-- Name: user_profile; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.user_profile (
+    user_id bigint NOT NULL,
+    status smallint,
+    username character varying(128) NOT NULL,
+    password character varying(64) NOT NULL,
+    fullname character varying(128),
+    nickname character varying(128),
+    birthday date,
+    gender character(1),
+    createdon date DEFAULT CURRENT_DATE NOT NULL,
+    updatedon date DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.user_profile OWNER TO blog_api;
+
+--
+-- Name: COLUMN user_profile.status; Type: COMMENT; Schema: public; Owner: blog_api
+--
+
+COMMENT ON COLUMN public.user_profile.status IS '-1 - deleted, 0 - inactive, 1 - active, 2 - verifying';
+
+
+--
+-- Name: user_profile_user_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.user_profile_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_profile_user_id_seq OWNER TO blog_api;
+
+--
+-- Name: user_profile_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.user_profile_user_id_seq OWNED BY public.user_profile.user_id;
+
+
+--
+-- Name: user_skill; Type: TABLE; Schema: public; Owner: blog_api
+--
+
+CREATE TABLE public.user_skill (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    skill_id integer NOT NULL
+);
+
+
+ALTER TABLE public.user_skill OWNER TO blog_api;
+
+--
+-- Name: user_skill_id_seq; Type: SEQUENCE; Schema: public; Owner: blog_api
+--
+
+CREATE SEQUENCE public.user_skill_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_skill_id_seq OWNER TO blog_api;
+
+--
+-- Name: user_skill_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blog_api
+--
+
+ALTER SEQUENCE public.user_skill_id_seq OWNED BY public.user_skill.id;
+
+
+--
+-- Name: v_all_ref_table; Type: MATERIALIZED VIEW; Schema: public; Owner: blog_api
+--
+
+CREATE MATERIALIZED VIEW public.v_all_ref_table AS
+ SELECT 'ref_contact'::text AS table_name,
+    array_to_json(array_agg(row_to_json(t1.*))) AS table_data
+   FROM public.ref_contact t1
+UNION ALL
+ SELECT 'ref_media'::text AS table_name,
+    array_to_json(array_agg(row_to_json(t1.*))) AS table_data
+   FROM public.ref_media t1
+UNION ALL
+ SELECT 'ref_skill'::text AS table_name,
+    array_to_json(array_agg(row_to_json(t1.*))) AS table_data
+   FROM public.ref_skill t1
+UNION ALL
+ SELECT 'ref_topic'::text AS table_name,
+    array_to_json(array_agg(row_to_json(t1.*))) AS table_data
+   FROM public.ref_topic t1
+  WITH NO DATA;
+
+
+ALTER TABLE public.v_all_ref_table OWNER TO blog_api;
+
+--
+-- Name: v_user_contact; Type: MATERIALIZED VIEW; Schema: public; Owner: blog_api
+--
+
+CREATE MATERIALIZED VIEW public.v_user_contact AS
+ SELECT t1.id,
+    t1.user_id,
+    t2.contact_type,
+    t1.contact_name,
+    t1.ord_num
+   FROM (public.user_contact t1
+     JOIN public.ref_contact t2 ON ((t1.contact_type_id = t2.contact_type_id)))
+  WITH NO DATA;
+
+
+ALTER TABLE public.v_user_contact OWNER TO blog_api;
+
+--
+-- Name: v_user_profile; Type: MATERIALIZED VIEW; Schema: public; Owner: blog_api
+--
+
+CREATE MATERIALIZED VIEW public.v_user_profile AS
+ SELECT t1.user_id,
+    t1.status,
+    t1.username,
+    t1.password,
+    t1.fullname,
+    t1.nickname,
+    t1.birthday,
+    t1.gender,
+    t1.createdon,
+    t1.updatedon,
+    t2.brief_description,
+    t2.education,
+    t2."position",
+    t2.company_name
+   FROM (public.user_profile t1
+     LEFT JOIN public.user_info t2 ON ((t2.user_id = t1.user_id)))
+  WITH NO DATA;
+
+
+ALTER TABLE public.v_user_profile OWNER TO blog_api;
+
+--
+-- Name: post post_id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.post ALTER COLUMN post_id SET DEFAULT nextval('public.post_post_id_seq'::regclass);
+
+
+--
+-- Name: post_topic id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.post_topic ALTER COLUMN id SET DEFAULT nextval('public.post_topic_id_seq'::regclass);
+
+
+--
+-- Name: ref_contact contact_type_id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.ref_contact ALTER COLUMN contact_type_id SET DEFAULT nextval('public.ref_contact_contact_type_id_seq'::regclass);
+
+
+--
+-- Name: ref_media media_id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.ref_media ALTER COLUMN media_id SET DEFAULT nextval('public.ref_media_media_id_seq'::regclass);
+
+
+--
+-- Name: ref_skill skill_id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.ref_skill ALTER COLUMN skill_id SET DEFAULT nextval('public.ref_skill_skill_id_seq'::regclass);
+
+
+--
+-- Name: ref_topic topic_id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.ref_topic ALTER COLUMN topic_id SET DEFAULT nextval('public.ref_topic_topic_id_seq'::regclass);
+
+
+--
+-- Name: user_contact id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_contact ALTER COLUMN id SET DEFAULT nextval('public.user_contact_id_seq'::regclass);
+
+
+--
+-- Name: user_experience id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_experience ALTER COLUMN id SET DEFAULT nextval('public.user_experience_id_seq'::regclass);
+
+
+--
+-- Name: user_media id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_media ALTER COLUMN id SET DEFAULT nextval('public.user_media_id_seq'::regclass);
+
+
+--
+-- Name: user_profile user_id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_profile ALTER COLUMN user_id SET DEFAULT nextval('public.user_profile_user_id_seq'::regclass);
+
+
+--
+-- Name: user_skill id; Type: DEFAULT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_skill ALTER COLUMN id SET DEFAULT nextval('public.user_skill_id_seq'::regclass);
+
+
+--
+-- Data for Name: post; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.post (post_id, user_id, status, title, content, createdat, updatedat) FROM stdin;
+\.
+
+
+--
+-- Data for Name: post_topic; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.post_topic (id, post_id, topic_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: ref_contact; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.ref_contact (contact_type_id, contact_type, ord_num) FROM stdin;
+1	phone	2
+2	mail	3
+3	address	1
+\.
+
+
+--
+-- Data for Name: ref_media; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.ref_media (media_id, media_name, ord_num) FROM stdin;
+1	github	1
+2	skype	2
+3	linkedin	3
+4	reddit	4
+\.
+
+
+--
+-- Data for Name: ref_skill; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.ref_skill (skill_id, skill_name, ord_num) FROM stdin;
+1	python	1
+2	react	2
+3	mysql	3
+4	elasticsearch	4
+5	oracle	5
+6	javascript	6
+7	linux	7
+\.
+
+
+--
+-- Data for Name: ref_topic; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.ref_topic (topic_id, topic_name, description, ord_num) FROM stdin;
+1	python	description	1
+2	react	description	2
+3	mysql	description	3
+4	elasticsearch	description	4
+5	oracle	description	5
+6	javascript	description	6
+7	linux	description	7
+\.
+
+
+--
+-- Data for Name: user_contact; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.user_contact (id, user_id, contact_type_id, contact_name, ord_num) FROM stdin;
+1	1	3	Ho Chi Minh, Vietnam	1
+2	1	3	Tien Giang, Vietnam	2
+3	1	1	836299xxxx	1
+4	1	1	090485xxxx	2
+5	1	2	phamtanvinh.me@gmail.com	1
+6	1	2	phamtanvinh_me@yahoo.com	2
+\.
+
+
+--
+-- Data for Name: user_experience; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.user_experience (id, user_id, description, updatedat, company_name, startedon, endedon, is_current) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_info; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.user_info (user_id, brief_description, education, "position", company_name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_media; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.user_media (id, user_id, media_id, url) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_profile; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.user_profile (user_id, status, username, password, fullname, nickname, birthday, gender, createdon, updatedon) FROM stdin;
+1	1	vinhpham	afdd0b4ad2ec172c586e2150770fbf9e	Pham Tan Vinh	Victor Pham	1994-12-08	m	2019-08-24	2019-08-24
+2	1	vinhpham	afdd0b4ad2ec172c586e2150770fbf9e	Pham Tan Vinh	Victor Pham	1994-12-08	m	2019-08-24	2019-08-24
+\.
+
+
+--
+-- Data for Name: user_skill; Type: TABLE DATA; Schema: public; Owner: blog_api
+--
+
+COPY public.user_skill (id, user_id, skill_id) FROM stdin;
+\.
+
+
+--
+-- Name: post_post_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.post_post_id_seq', 1, false);
+
+
+--
+-- Name: post_topic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.post_topic_id_seq', 1, false);
+
+
+--
+-- Name: ref_contact_contact_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.ref_contact_contact_type_id_seq', 1, false);
+
+
+--
+-- Name: ref_media_media_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.ref_media_media_id_seq', 1, false);
+
+
+--
+-- Name: ref_skill_skill_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.ref_skill_skill_id_seq', 1, false);
+
+
+--
+-- Name: ref_topic_topic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.ref_topic_topic_id_seq', 1, false);
+
+
+--
+-- Name: user_contact_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.user_contact_id_seq', 6, true);
+
+
+--
+-- Name: user_experience_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.user_experience_id_seq', 1, false);
+
+
+--
+-- Name: user_media_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.user_media_id_seq', 1, false);
+
+
+--
+-- Name: user_profile_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.user_profile_user_id_seq', 2, true);
+
+
+--
+-- Name: user_skill_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blog_api
+--
+
+SELECT pg_catalog.setval('public.user_skill_id_seq', 1, false);
+
+
+--
+-- Name: post post_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.post
+    ADD CONSTRAINT post_pkey PRIMARY KEY (post_id);
+
+
+--
+-- Name: post_topic post_topic_combo1; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.post_topic
+    ADD CONSTRAINT post_topic_combo1 UNIQUE (topic_id, post_id);
+
+
+--
+-- Name: post_topic post_topic_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.post_topic
+    ADD CONSTRAINT post_topic_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ref_contact ref_contact_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.ref_contact
+    ADD CONSTRAINT ref_contact_pkey PRIMARY KEY (contact_type_id);
+
+
+--
+-- Name: ref_media ref_media_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.ref_media
+    ADD CONSTRAINT ref_media_pkey PRIMARY KEY (media_id);
+
+
+--
+-- Name: ref_skill ref_skill_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.ref_skill
+    ADD CONSTRAINT ref_skill_pkey PRIMARY KEY (skill_id);
+
+
+--
+-- Name: ref_topic ref_topic_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.ref_topic
+    ADD CONSTRAINT ref_topic_pkey PRIMARY KEY (topic_id);
+
+
+--
+-- Name: user_contact user_contact_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_contact
+    ADD CONSTRAINT user_contact_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_experience user_experience_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_experience
+    ADD CONSTRAINT user_experience_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_info user_info_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_info
+    ADD CONSTRAINT user_info_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: user_media user_media_combo1; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_media
+    ADD CONSTRAINT user_media_combo1 UNIQUE (user_id, media_id);
+
+
+--
+-- Name: user_media user_media_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_media
+    ADD CONSTRAINT user_media_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_profile user_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_profile
+    ADD CONSTRAINT user_profile_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: user_skill user_skill_combo1; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_skill
+    ADD CONSTRAINT user_skill_combo1 UNIQUE (user_id, skill_id);
+
+
+--
+-- Name: user_skill user_skill_pkey; Type: CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_skill
+    ADD CONSTRAINT user_skill_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: json_user_contact_user_id_uniq; Type: INDEX; Schema: public; Owner: blog_api
+--
+
+CREATE UNIQUE INDEX json_user_contact_user_id_uniq ON public.json_user_contact USING btree (user_id);
+
+
+--
+-- Name: user_contact_combo; Type: INDEX; Schema: public; Owner: blog_api
+--
+
+CREATE INDEX user_contact_combo ON public.user_contact USING btree (user_id, contact_type_id);
+
+
+--
+-- Name: v_all_ref_table_table_name_uniq; Type: INDEX; Schema: public; Owner: blog_api
+--
+
+CREATE UNIQUE INDEX v_all_ref_table_table_name_uniq ON public.v_all_ref_table USING btree (table_name);
+
+
+--
+-- Name: v_user_contact_id_uniq; Type: INDEX; Schema: public; Owner: blog_api
+--
+
+CREATE UNIQUE INDEX v_user_contact_id_uniq ON public.v_user_contact USING btree (id);
+
+
+--
+-- Name: v_user_profile_user_id_uniq; Type: INDEX; Schema: public; Owner: blog_api
+--
+
+CREATE UNIQUE INDEX v_user_profile_user_id_uniq ON public.v_user_profile USING btree (user_id);
+
+
+--
+-- Name: post_topic post_topic_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.post_topic
+    ADD CONSTRAINT post_topic_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.post(post_id);
+
+
+--
+-- Name: post_topic post_topic_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.post_topic
+    ADD CONSTRAINT post_topic_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profile(user_id);
+
+
+--
+-- Name: post post_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.post
+    ADD CONSTRAINT post_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profile(user_id);
+
+
+--
+-- Name: user_contact user_contact_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_contact
+    ADD CONSTRAINT user_contact_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profile(user_id);
+
+
+--
+-- Name: user_experience user_experience_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_experience
+    ADD CONSTRAINT user_experience_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profile(user_id);
+
+
+--
+-- Name: user_info user_info_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_info
+    ADD CONSTRAINT user_info_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profile(user_id);
+
+
+--
+-- Name: user_media user_media_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_media
+    ADD CONSTRAINT user_media_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profile(user_id);
+
+
+--
+-- Name: user_skill user_skill_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: blog_api
+--
+
+ALTER TABLE ONLY public.user_skill
+    ADD CONSTRAINT user_skill_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profile(user_id);
+
+
+--
+-- Name: json_user_contact; Type: MATERIALIZED VIEW DATA; Schema: public; Owner: blog_api
+--
+
+REFRESH MATERIALIZED VIEW public.json_user_contact;
+
+
+--
+-- Name: v_all_ref_table; Type: MATERIALIZED VIEW DATA; Schema: public; Owner: blog_api
+--
+
+REFRESH MATERIALIZED VIEW public.v_all_ref_table;
+
+
+--
+-- Name: v_user_contact; Type: MATERIALIZED VIEW DATA; Schema: public; Owner: blog_api
+--
+
+REFRESH MATERIALIZED VIEW public.v_user_contact;
+
+
+--
+-- Name: v_user_profile; Type: MATERIALIZED VIEW DATA; Schema: public; Owner: blog_api
+--
+
+REFRESH MATERIALIZED VIEW public.v_user_profile;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

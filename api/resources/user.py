@@ -4,7 +4,8 @@ from marshmallow import pprint
 from api.utils import catch_exception
 from api.resources import LIMIT_ROWS
 from api.database import get_session
-from api.models.user import ViewUserContact, UserInfoAll
+from api.models import jsonify_respone
+from api.models.user import JsonUserContact, UserInfoAll
 
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
@@ -14,27 +15,24 @@ user_bp = Blueprint('user', __name__, url_prefix='/user')
 @catch_exception
 @get_session
 def get_user_all(session):
-    users = session.query(UserInfoAll).limit(LIMIT_ROWS).all()
-    session.commit()
+    respone = session.query(UserInfoAll).limit(LIMIT_ROWS).all()
 
-    return UserInfoAll.jsonify(users, many=True)
+    return jsonify_respone(respone, many=True)
 
 
 @user_bp.route('/<int:user_id>', strict_slashes=False)
 @catch_exception
 @get_session
 def get_user(session, user_id):
-    user_info_all = session.query(UserInfoAll).filter_by(user_id=user_id).one()
-    session.commit()
+    respone = session.query(UserInfoAll).filter_by(user_id=user_id).one()
 
-    return user_info_all.json()
+    return jsonify_respone(respone)
 
 
 @user_bp.route('/<int:user_id>/contact', strict_slashes=False)
 @catch_exception
 @get_session
 def get_user_contact(session, user_id):
-    contacts = session.query(ViewUserContact).filter_by(user_id=user_id).all()
-    session.commit()
+    respone = session.query(JsonUserContact).filter_by(user_id=user_id).all()
 
-    return ViewUserContact.jsonify(contacts, many=True)
+    return jsonify_respone(respone, many=True)

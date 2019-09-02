@@ -1,67 +1,59 @@
-from sqlalchemy import orm, Table, Column, Integer, ForeignKey
+from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy.orm import backref, relationship
 
-from api.database import db, ma
-from api.models import BaseModel, BaseSchema, apply_schema, getTable
-
-
-@apply_schema('UserProfileSchema')
-class UserProfile(BaseModel):
-    __tablename__ = 'user_profile'
+from .base import BaseModel
+from . import getTable
 
 
-class UserProfileSchema(ma.Schema):
-    class Meta:
-        fields = ('user_id', 'status', 'username', 'fullname',
-                  'nickname', 'birthday', 'gender')
-
+__all__ = [
+    'ViewUserProfile',
+    'ViewUserContact',
+    'UserInfoAll',
+    'JsonUserContact'
+]
 
 # View user profile
 
-@apply_schema('ViewUserProfileSchema')
+
 class ViewUserProfile(BaseModel):
     columns = [Column('user_id', Integer, primary_key=True)]
+
     __table__ = getTable('v_user_profile', columns)
-
-
-class ViewUserProfileSchema(BaseSchema):
-    class Meta:
-        model = ViewUserProfile
-        fields = ['user_id', 'status', 'username',
-                  'fullname', 'nickname', 'birthday', 'gender',
-                  'createdon', 'updatedon', 'brief_description',
-                  'education', 'position', 'company_name']
-
+    __schemaname__ = 'ViewUserProfileSchema'
 
 # View user contact
 
-@apply_schema('ViewUserContactSchema')
+
 class ViewUserContact(BaseModel):
     columns = (
         Column('id', Integer, primary_key=True),
         Column('user_id', Integer, ForeignKey('v_user_profile.user_id')),
     )
-    user_info = orm.relationship('ViewUserProfile', backref='contacts')
 
     __table__ = getTable('v_user_contact', columns)
+    __schemaname__ = 'ViewUserContactSchema'
 
 
-class ViewUserContactSchema(BaseSchema):
-    class Meta:
-        model = ViewUserContact
-        fields = ['id', 'user_id', 'contact_type', 'contact_name', 'ord_num']
+# --------------------------------------------------------
+# ---- User Info Relationship
+# --------------------------------------------------------
 
 
-# Get all info
-
-@apply_schema('UserInfoAllSchema')
 class UserInfoAll(ViewUserProfile):
     __table__ = ViewUserProfile.__table__
+    __schemaname__ = 'UserInfoAllSchema'
+
+    rel_child = relationship(
+        "JsonUserContact", backref=backref("user_info"))
 
 
-class UserInfoAllSchema(BaseSchema):
+class JsonUserContact(BaseModel):
+    columns = [
+        Column('user_id', Integer,  ForeignKey(
+            'v_user_profile.user_id'), primary_key=True),
+    ]
+    __table__ = getTable('json_user_contact', columns)
+    __schemaname__ = 'JsonUserContactSchema'
 
-    class Meta:
-        model = UserInfoAll
-        fields = ViewUserProfileSchema.merge_fields(['contacts'])
-    contacts = ma.Nested(ViewUserContactSchema,
-                         many=True, exclude=('user_id',))
+    rel_parent = relationship(
+        "UserInfoAll", backref=backref("contacts", uselist=False))

@@ -1,0 +1,1 @@
+gunicorn api:app -b localhost:5000

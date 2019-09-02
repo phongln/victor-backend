@@ -1,59 +1,39 @@
 from sqlalchemy import orm, Table, Column, Integer, ForeignKey, String
 
-from api.models import BaseModel, BaseSchema, apply_schema, getTable
+from .base import BaseModel
+from . import getTable
 
 
-@apply_schema('RefContactSchema')
+__all__ = [
+    'RefContact',
+    'RefMedia',
+    'RefSkill',
+    'RefTopic',
+    'ViewAllRefTable'
+]
+
+
 class RefContact(BaseModel):
     __tablename__ = 'ref_contact'
+    __schemaname__ = 'RefContactSchema'
 
 
-class RefContactSchema(BaseSchema):
-    class Meta:
-        model = RefContact
-        fields = ['contact_type_id', 'contact_type']
-
-
-@apply_schema('RefMediaSchema')
 class RefMedia(BaseModel):
     __tablename__ = 'ref_media'
+    __schemaname__ = 'RefMediaSchema'
 
 
-class RefMediaSchema(BaseSchema):
-    class Meta:
-        model = RefMedia
-        fields = ['media_id', 'media_name']
-
-
-@apply_schema('RefSkillSchema')
 class RefSkill(BaseModel):
     __tablename__ = 'ref_skill'
+    __schemaname__ = 'RefSkillSchema'
 
 
-class RefSkillSchema(BaseSchema):
-    class Meta:
-        model = RefSkill
-        fields = ['skill_id', 'skill_name']
-
-
-@apply_schema('RefTopicSchema')
 class RefTopic(BaseModel):
     __tablename__ = 'ref_topic'
+    __schemaname__ = 'RefTopicSchema'
 
 
-class RefTopicSchema(BaseSchema):
-    class Meta:
-        model = RefTopic
-        fields = ['topic_id', 'topic_name', 'description']
-
-
-@apply_schema('ViewAllRefTableSchema')
 class ViewAllRefTable(BaseModel):
     columns = [Column('table_name', String(64), primary_key=True), ]
     __table__ = getTable('v_all_ref_table', columns)
-
-
-class ViewAllRefTableSchema(BaseSchema):
-    class Meta:
-        model = ViewAllRefTable
-        fields = ['table_name', 'table_data']
+    __schemaname__ = 'ViewAllRefTableSchema'
