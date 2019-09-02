@@ -3,8 +3,8 @@ from flask import Response
 from sqlalchemy import Table, Column
 from typing import Any, List
 
-from api.database import db
-from api.models.base import BaseModel
+from . import db
+from .base import BaseModel
 
 
 def apply_schema(schema_name: str) -> db.Model:
