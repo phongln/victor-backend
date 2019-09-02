@@ -1,4 +1,3 @@
-import sys
 from functools import wraps
 from flask import Response
 from sqlalchemy import Table, Column

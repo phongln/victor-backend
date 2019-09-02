@@ -7,6 +7,9 @@ load_dotenv(DOTENV_PATH)
 
 FLASK_ENV = os.getenv('FLASK_ENV')
 
+BLOG_HOST = os.getenv('BLOG_HOST')
+BLOG_PORT = os.getenv('BLOG_PORT')
+
 POSTGRES_HOST = os.getenv('POSTGRES_HOST')
 POSTGRES_PORT = os.getenv('POSTGRES_PORT')
 POSTGRES_DB = os.getenv('POSTGRES_DB')

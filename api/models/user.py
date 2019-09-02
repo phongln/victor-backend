@@ -3,7 +3,7 @@ from sqlalchemy.orm import backref, relationship
 from marshmallow.fields import Nested
 
 from .base import BaseModel, BaseSchema
-from ._util import getTable
+from . import getTable
 
 
 # View user profile

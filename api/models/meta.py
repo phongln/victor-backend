@@ -1,7 +1,7 @@
 from sqlalchemy import orm, Table, Column, Integer, ForeignKey, String
 
 from .base import BaseModel, BaseSchema
-from ._util import apply_schema, getTable
+from . import getTable
 
 
 class RefContact(BaseModel):
