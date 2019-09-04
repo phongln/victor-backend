@@ -1,15 +1,13 @@
 from celery import Celery
-from api.config import config
 
 
-celery = Celery(
-    __name__,
-    backend=config.CELERY_RESULT_BACKEND,
-    broker=config.CELERY_BROKER_URL
-)
+celery = Celery(__name__)
 
 with celery:
+    from api.config import celeryconfig
     from api import tasks
+
+    celery.config_from_object(celeryconfig)
 
 
 def make_celery(app=None):

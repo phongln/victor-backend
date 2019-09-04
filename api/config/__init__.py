@@ -5,6 +5,7 @@ APP_ROOT = os.path.join(os.path.dirname(__file__), '..')
 DOTENV_PATH = os.path.join(APP_ROOT, '.env')
 load_dotenv(DOTENV_PATH)
 
+
 FLASK_ENV = os.getenv('FLASK_ENV')
 
 BLOG_HOST = os.getenv('BLOG_HOST')
@@ -18,42 +19,32 @@ POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
 
 POSTGRES_DATABASE_URI = f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}'
 
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
 
-class Config(object):
-    DEBUG = False
-    TESTING = False
+def get_celeryconfig():
+    from . import celeryconfig
+    
+    return celeryconfig
 
-    SQLALCHEMY_DATABASE_URI = POSTGRES_DATABASE_URI
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+def get_gunicornconfig():
+    from . import gunicornconfig
 
-    CELERY_RESULT_BACKEND = CELERY_RESULT_BACKEND
-    CELERY_BROKER_URL = CELERY_BROKER_URL
-
-
-class DevelopmentConfig(Config):
-    DEBUG = True
-
-
-class ProductionConfig(Config):
-    pass
-
-
-class TestingConfig(Config):
-    TESTING = True
-
-
-_config = {
-    'development': DevelopmentConfig,
-    'production': ProductionConfig,
-    'testing': TestingConfig
-}
+    return gunicornconfig
 
 
 def get_config():
+    from .development import DevelopmentConfig
+    from .production import ProductionConfig
+    from .testing import TestingConfig
+
+    _config = {
+        'development': DevelopmentConfig,
+        'production': ProductionConfig,
+        'testing': TestingConfig
+    }
     return _config[FLASK_ENV]
 
 
 config = get_config()
+celeryconfig = get_celeryconfig()
+gunicornconfig = get_gunicornconfig()

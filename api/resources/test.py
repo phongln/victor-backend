@@ -13,3 +13,13 @@ def index():
     })
 
     return respone
+
+@test_bp.route('/wait', strict_slashes=False)
+def wait():
+    result = tasks.very_long_task.delay(10)
+    respone = jsonify({
+        'message': 'first end point "test" is called',
+        'status_code': 200
+    })
+
+    return result.wait()
