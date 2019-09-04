@@ -1,1 +1,1 @@
-gunicorn api:app -b localhost:5000
+gunicorn api:app -c api/gunicorn.conf.py

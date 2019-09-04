@@ -45,12 +45,15 @@ class TestingConfig(Config):
     TESTING = True
 
 
-config = {
+_config = {
     'development': DevelopmentConfig,
-    'prodction': ProductionConfig,
+    'production': ProductionConfig,
     'testing': TestingConfig
 }
 
 
 def get_config():
-    return config[FLASK_ENV]
+    return _config[FLASK_ENV]
+
+
+config = get_config()

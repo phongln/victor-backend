@@ -1,16 +1,17 @@
-from flask import Flask
+from flask import Flask, g
 from flask_cors import CORS
 
-from api.config import get_config
+from api.config import config
 from api.celery import make_celery
 
 
 def create_app():
     app = Flask(__name__)
-    config = get_config()
     app.config.from_object(config)
+    celery = make_celery(app)
 
     with app.app_context():
+
         CORS(app)
 
         from api.database import init_datatabase
@@ -23,4 +24,3 @@ def create_app():
 
 
 app = create_app()
-celery = make_celery(app)

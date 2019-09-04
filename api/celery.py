@@ -1,13 +1,18 @@
 from celery import Celery
+from api.config import config
 
 
-def make_celery(app):
-    celery = Celery(
-        app.import_name,
-        backend=app.config['CELERY_RESULT_BACKEND'],
-        broker=app.config['CELERY_BROKER_URL']
-    )
+celery = Celery(
+    __name__,
+    backend=config.CELERY_RESULT_BACKEND,
+    broker=config.CELERY_BROKER_URL
+)
 
+with celery:
+    from api import tasks
+
+
+def make_celery(app=None):
     celery.conf.update(app.config)
 
     class ContextTask(celery.Task):

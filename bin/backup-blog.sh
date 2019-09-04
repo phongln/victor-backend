@@ -1,0 +1,1 @@
+psql -U postgres -d blog -f blog.bak
