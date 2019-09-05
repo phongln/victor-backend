@@ -21,11 +21,6 @@ POSTGRES_DATABASE_URI = f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWO
 
 
 
-def get_celeryconfig():
-    from . import celeryconfig
-    
-    return celeryconfig
-
 def get_gunicornconfig():
     from . import gunicornconfig
 
@@ -46,5 +41,4 @@ def get_config():
 
 
 config = get_config()
-celeryconfig = get_celeryconfig()
 gunicornconfig = get_gunicornconfig()

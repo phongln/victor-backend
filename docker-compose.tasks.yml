@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  redis_queue:
+    image: redis
+    container_name: task_queue
+    ports:
+      - '6379:6379'
+
+  celery_worker:
+    container_name: task_worker
+    build:
+      context: ./api
+      dockerfile: ./monitor/Dockerfile
+    depends_on:
+      - redis_queue
+
+  flower_monitor:
+    container_name: task_monitor
+    build:
+      context: ./api
+      dockerfile: ./monitor/Dockerfile
+    ports:
+      - '5555:5555'
+    entrypoint: flower
+    command: -A tasks.celery --port=5555 --broker=redis://redis_queue:6379/0
+    depends_on:
+      - redis_queue
