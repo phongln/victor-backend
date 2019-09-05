@@ -1,1 +1,1 @@
-celery -A api.celery worker
+celery -A api.celery worker -P eventlet -l info

@@ -1,6 +1,3 @@
-from flask_restful import Api
-
-api = Api()
 LIMIT_ROWS = 10
 
 
@@ -13,5 +10,4 @@ def init_blueprint(app):
 
 
 def init_resources(app):
-    api.init_app(app)
     init_blueprint(app)

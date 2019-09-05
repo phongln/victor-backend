@@ -9,3 +9,4 @@ threads = 2
 timeout = 180
 keepalive = 26*3600
 capture_output = True
+worker_class = 'gevent'

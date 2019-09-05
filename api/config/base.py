@@ -1,0 +1,10 @@
+import os
+from . import POSTGRES_DATABASE_URI
+
+
+class Config(object):
+    DEBUG = False
+    TESTING = False
+
+    SQLALCHEMY_DATABASE_URI = POSTGRES_DATABASE_URI
+    SQLALCHEMY_TRACK_MODIFICATIONS = False

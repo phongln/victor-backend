@@ -1,8 +1,8 @@
 import time
-from api.celery import celery
+from celery import task
 
 
-@celery.task()
+@task()
 def very_long_task(seconds=5):
     time.sleep(seconds)
     return {'ok': '200'}
