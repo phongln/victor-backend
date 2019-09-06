@@ -1,8 +1,5 @@
 FROM python:3.7-alpine
 
-ENV REDIS_HOST redis_queue
-ENV REDIS_PORT 6379
-
 RUN mkdir /queue
 WORKDIR /queue
 
