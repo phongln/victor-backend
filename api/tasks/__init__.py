@@ -1,2 +1,3 @@
-from .celery import *
-from .test import *
+from .celery import celery, make_celery
+with celery:
+    from . import test

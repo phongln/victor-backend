@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  task-queue:
+    image: redis
+    container_name: task-queue
+    networks:
+      - task-net
+      - backend-net
+
+  task-worker:
+    container_name: task-worker
+    build:
+      context: ./api
+      dockerfile: ./monitor/Dockerfile
+    depends_on:
+      - task-queue
+    links:
+      - task-queue
+    networks:
+      - task-net
+    environment:
+      BROKER_URL: 'redis://task-queue/0'
+      CELERY_RESULT_BACKEND: 'redis://task-queue/0'
+
+  task-monitor:
+    container_name: task-monitor
+    build:
+      context: ./api
+      dockerfile: ./monitor/Dockerfile
+    ports:
+      - '5555:5555'
+    entrypoint: flower
+    command: -A tasks.celery --port=5555 --broker=redis://task-queue/0
+    depends_on:
+      - task-queue
+    networks:
+      - task-net
+      - backend-net
+
+networks:
+  task-net:
+  backend-net:
+    external: true

@@ -1,0 +1,44 @@
+version: '3'
+services:
+  blog-db:
+    container_name: blog-db
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Aa123456}
+    networks:
+      - db-net
+      - backend-net
+    ports:
+      - '5432:5432/tcp'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: on-failure
+
+  pgadmin4:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-phamtanvinh.me@gmail.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-Aa123456}
+    depends_on:
+      - blog-db
+    links:
+      - blog-db
+    networks:
+      - db-net
+    ports:
+      - '8088:80/tcp'
+    volumes:
+      - db_data:/var/lib/pgadmin
+
+
+networks:
+  db-net:
+  backend-net:
+    external: true
+
+volumes:
+  db_data:
+    external: true
