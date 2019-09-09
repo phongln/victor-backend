@@ -3,7 +3,7 @@ services:
   blog-db:
     container_name: blog-db
     build:
-      context: ./scripts
+      context: ${CONTEXT_ROOT:-../scripts}
       dockerfile: Dockerfile
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
