@@ -39,7 +39,7 @@ curl localhost:5000/test
 
 ### Monitor
 - [flower for tasks](http://localhost:5555)
-- [pgadmin4 for postgres](httl://localhost:8088)
+- [pgadmin4 for postgres](http://localhost:8088)
 
 
 ### Todo
