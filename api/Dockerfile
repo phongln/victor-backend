@@ -1,12 +1,15 @@
-FROM python:3.7-alpine
+FROM backend-api:latest
+
+USER root
 
 WORKDIR /home
 COPY . /home/api
+RUN mv ./api/api.env ./api/.env
+RUN cp ./api/docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-RUN echo "@edge-community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-# RUN apk update
-RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev python3-dev libpq
-RUN pip install -r ./api/requirements.txt
-RUN apk del .build-deps
+ENTRYPOINT [ "/entrypoint.sh" ]
 
-CMD gunicorn api:app -c python:api.config.gunicornconfig 
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "curl", "f", "http:/localhost:/test" ]
+
+EXPOSE 5000

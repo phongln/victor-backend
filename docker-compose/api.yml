@@ -1,0 +1,28 @@
+version: '3'
+services:
+  backend-api:
+    container_name: backend-api
+    build:
+      context: ${CONTEXT_API}
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    networks:
+      - backend-net
+    environment:
+      # database settings
+      POSTGRES_HOST: 'blog-db'
+      POSTGRES_PORT: ${API_PG_PORT:-5432}
+      POSTGRES_DB: ${API_PG_DB}
+      POSTGRES_USER: ${API_PG_USER}
+      POSTGRES_PASSWORD: ${API_PG_PASSWORD}
+      # task settings
+      REDIS_HOST: 'task-queue'
+      REDIS_PORT: 6379
+      BROKER_URL: 'redis://task-queue:${TASK_QUEUE_PORT:-6379}/${BROKER_REDIS_DB}'
+      CELERY_RESULT_BACKEND: 'redis://task-queue:${TASK_QUEUE_PORT:-6379}/${RESULT_REDIS_DB}'
+    restart: on-failure
+
+networks:
+  backend-net:
+    external: true
