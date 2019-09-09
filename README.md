@@ -27,7 +27,7 @@ Let's start.
 ```sh
 git clone --depth 1 git@github.com:phamtanvinh/victor-backend.git
 cd victor-backend
-bash ./start_all.sh
+bash ./start-all.sh
 ```
 
 
