@@ -6,14 +6,14 @@ services:
     networks:
       - kong-net
     environment:
-      POSTGRES_DB: ${KONG_PG_DATABASE:-kong}
-      POSTGRES_USER: ${KONG_PG_USER:-kong}
-      POSTGRES_PASSWORD: ${KONG_PG_PASSWORD:-Aa123456}
+      POSTGRES_DB: ${KONG_PG_DATABASE}
+      POSTGRES_USER: ${KONG_PG_USER}
+      POSTGRES_PASSWORD: ${KONG_PG_PASSWORD}
     volumes:
       - kong_data:/var/lib/postgresql/data
     restart: on-failure
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${KONG_PG_USER:-kong}"]
+      test: ["CMD", "pg_isready", "-U", "${KONG_PG_USER}"]
       interval: 30s
       timeout: 30s
       retries: 3
@@ -29,10 +29,10 @@ services:
       - kong-net
     environment:
       KONG_DATABASE: postgres
-      KONG_PG_DATABASE: ${KONG_PG_DATABASE:-kong}
+      KONG_PG_DATABASE: ${KONG_PG_DATABASE}
       KONG_PG_HOST: kong-db
-      KONG_PG_USER: ${KONG_PG_USER:-kong}
-      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD:-Aa123456}
+      KONG_PG_USER: ${KONG_PG_USER}
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
     restart: on-failure
 
   kong-gate:
@@ -50,9 +50,9 @@ services:
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: kong-db
-      KONG_PG_DATABASE: ${KONG_PG_DATABASE:-kong}
-      KONG_PG_USER: ${KONG_PG_USER:-kong}
-      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD:-Aa123456}
+      KONG_PG_DATABASE: ${KONG_PG_DATABASE}
+      KONG_PG_USER: ${KONG_PG_USER}
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
       KONG_CASSANDRA_CONTACT_POINTS: kong-db
       KONG_PROXY_ACCESS_LOG: /dev/stdout
       KONG_PROXY_ERROR_LOG: /dev/stderr
@@ -75,7 +75,7 @@ services:
   konga-migrations:
     container_name: konga-migrations
     image: pantsel/konga:latest
-    command: '-c prepare -a postgres -u postgresql://${KONG_PG_USER:-kong}:${KONG_PG_PASSWORD:-Aa123456}@kong-db/konga_db'
+    command: '-c prepare -a postgres -u postgresql://${KONG_PG_USER}:${KONG_PG_PASSWORD}@kong-db/${KONGA_DB}'
     networks:
       - kong-net
     links:
@@ -98,9 +98,9 @@ services:
     environment:
       DB_ADAPTER: postgres
       DB_HOST: kong-db
-      DB_DATABASE: konga_db
-      DB_USER: ${KONG_PG_USER:-kong}
-      DB_PASSWORD: ${KONG_PG_PASSWORD:-Aa123456}
+      DB_DATABASE: ${KONGA_DB}
+      DB_USER: ${KONG_PG_USER}
+      DB_PASSWORD: ${KONG_PG_PASSWORD}
       NODE_ENV: production
     restart: on-failure
 

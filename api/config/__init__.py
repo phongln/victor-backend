@@ -11,6 +11,9 @@ FLASK_ENV = os.getenv('FLASK_ENV')
 BLOG_HOST = os.getenv('BLOG_HOST')
 BLOG_PORT = os.getenv('BLOG_PORT')
 
+API_HOST = os.getenv('API_HOST')
+API_PORT = os.getenv('API_PORT')
+
 POSTGRES_HOST = os.getenv('POSTGRES_HOST')
 POSTGRES_PORT = os.getenv('POSTGRES_PORT')
 POSTGRES_DB = os.getenv('POSTGRES_DB')
