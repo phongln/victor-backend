@@ -22,16 +22,19 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      VIRTUAL_HOST: ${PROXY_PGADMIN}
     depends_on:
       - blog-db
     links:
       - blog-db
     networks:
       - db-net
-    ports:
-      - '8088:80/tcp'
+      - backend-net
+    # ports:
+    #   - '8088:80/tcp'
     volumes:
       - db_data:/var/lib/pgadmin
+    restart: on-failure
 
 networks:
   db-net:

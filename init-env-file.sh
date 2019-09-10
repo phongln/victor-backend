@@ -1,9 +1,13 @@
+# HOST_NAME=$(hostname)
+HOST_NAME='localhost'
 ENV_FILE='.env'
 
+CONTEXT_ROOT=$(python bin/py-scripts/get-path.py "$(pwd)")
+
 # variables Setting
-CONTEXT_ROOT="$(realpath .)"
-CONTEXT_API="$CONTEXT_ROOT/api"
-CONTEXT_DB="$CONTEXT_ROOT/scripts"
+
+CONTEXT_API=$(python bin/py-scripts/get-path.py $CONTEXT_ROOT 'api')
+CONTEXT_DB=$(python bin/py-scripts/get-path.py $CONTEXT_ROOT 'scripts')
 CONTEXT_TASK="$CONTEXT_API"
 
 cat > $ENV_FILE <<EOF
@@ -68,5 +72,19 @@ API_PG_PORT=5432
 API_PG_DB=blog
 API_PG_USER=blog_api
 API_PG_PASSWORD=Aa123456
+
+##########################################################################
+#
+# Nginx Setting
+#
+##########################################################################
+
+HOST_NAME=$HOST_NAME
+
+PROXY_TASK_MONITOR=task-monitor.$HOST_NAME
+PROXY_PGADMIN=pgadmin.$HOST_NAME
+PROXY_KONGA=konga.$HOST_NAME
+PROXY_BACKEND_API=backend-api.$HOST_NAME
+PROXY_GATEWAY=api.$HOST_NAME
 
 EOF
