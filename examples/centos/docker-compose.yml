@@ -1,0 +1,18 @@
+version: '3'
+services:
+  vm-centos:
+    container_name: vm-centos
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - 7000:80
+      - 7001:7001
+    networks:
+      - backend-net
+
+
+networks:
+  backend-net:
+    external: true
