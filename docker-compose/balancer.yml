@@ -1,0 +1,37 @@
+version: '3'
+services:
+  backend-balancer:
+    container_name: backend-balancer
+    image: victor-nginx
+    ports:
+      - 8080:80
+    links:
+      - consul
+    networks:
+      - backend-net
+    restart: on-failure
+  consul:
+    container_name: consul
+    image: progrium/consul
+    command: -server -bootstrap -advertise ${HOST_IP:-172.17.0.1}
+    labels:
+      SERVICE_IGNORE: 'yes'
+    ports:
+      - 8500:8500
+    networks:
+      - backend-net
+
+  registrator:
+    container_name: registrator
+    image: gliderlabs/registrator:latest
+    command: "-internal consul://consul:8500"
+    links:
+      - consul
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    networks:
+      - backend-net
+      
+networks:
+  backend-net:
+    external: true

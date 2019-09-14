@@ -9,3 +9,5 @@ ADD ./monitor/requirements.txt /queue
 RUN pip install -r requirements.txt
 
 ENTRYPOINT celery -A tasks.celery worker -l info
+
+EXPOSE 5555
