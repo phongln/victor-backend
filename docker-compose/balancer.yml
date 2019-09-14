@@ -13,7 +13,7 @@ services:
   consul:
     container_name: consul
     image: progrium/consul
-    command: -server -bootstrap -advertise ${HOST_IP:-172.17.0.1}
+    command: -server -bootstrap -advertise ${HOST_IP}
     labels:
       SERVICE_IGNORE: 'yes'
     ports:

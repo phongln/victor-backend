@@ -5,11 +5,11 @@ DOCKER_COMPOSE_DIR='./docker-compose'
 
 bash ./init-env-file.sh
 bash ./init-docker-resource.sh
-docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_DIR/db.yml up -d --build
-docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_DIR/tasks.yml up -d --build
-docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_DIR/api.yml up -d --build
-docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_DIR/gateway.yml up -d --build
-docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_DIR/nginx-proxy.yml up -d --build
+
+for _compose_file in $DOCKER_COMPOSE_DIR/*; do
+    docker-compose -p $PROJECT_NAME -f $_compose_file up -d --build
+done
+
 docker system prune -f
 
 

@@ -2,10 +2,26 @@
 # HOST_NAME=$(hostname)
 HOST_NAME='localhost'
 ENV_FILE='.env'
+HOST_IP= # osx default
 
 function join_path {
     python bin/py-scripts/get-path.py "$@"
 }
+
+function darwin_init {
+    HOST_IP='172.17.0.1'
+}
+
+function linux_init {
+    HOST_IP=$(/sbin/ip route|awk '/default/ { print $3 }')
+}
+
+case $OSTYPE in 
+    darwin*) darwin_init ;;
+    linux*) linux_init ;;
+    msys*) ;;
+    *) ;;
+esac
 
 CONTEXT_ROOT=$(join_path "$(pwd)")
 
@@ -29,6 +45,7 @@ CONTEXT_TASK=$CONTEXT_TASK
 CONTEXT_DB=$CONTEXT_DB
 CONTEXT_BALANCER=$CONTEXT_BALANCER
 
+HOST_IP=$HOST_IP
 
 ##########################################################################
 #
