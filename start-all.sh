@@ -5,8 +5,13 @@ DOCKER_COMPOSE_DIR='./docker-compose'
 
 bash ./init-env-file.sh
 bash ./init-docker-resource.sh
-docker-compose -f $DOCKER_COMPOSE_DIR/db.yml -p $PROJECT_NAME up -d --build
-docker-compose -f $DOCKER_COMPOSE_DIR/tasks.yml -p $PROJECT_NAME up -d --build
-docker-compose -f $DOCKER_COMPOSE_DIR/api.yml -p $PROJECT_NAME up -d --build
-docker-compose -f $DOCKER_COMPOSE_DIR/gateway.yml -p $PROJECT_NAME up -d --build
+
+for _compose_file in $DOCKER_COMPOSE_DIR/*; do
+    docker-compose -p $PROJECT_NAME -f $_compose_file up -d --build
+done
+
 docker system prune -f
+
+
+# register services to kong
+bash ./bin/kong-register-api-backend.sh

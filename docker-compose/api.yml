@@ -1,12 +1,12 @@
 version: '3'
 services:
   backend-api:
-    container_name: backend-api
+    # container_name: backend-api
     build:
       context: ${CONTEXT_API}
       dockerfile: Dockerfile
-    ports:
-      - '5000:5000'
+    # ports:
+    #   - '5000:5000'
     networks:
       - backend-net
     environment:
@@ -21,6 +21,7 @@ services:
       REDIS_PORT: 6379
       BROKER_URL: 'redis://task-queue:${TASK_QUEUE_PORT:-6379}/${BROKER_REDIS_DB}'
       CELERY_RESULT_BACKEND: 'redis://task-queue:${TASK_QUEUE_PORT:-6379}/${RESULT_REDIS_DB}'
+      VIRTUAL_HOST: ${PROXY_BACKEND_API}
     restart: on-failure
 
 networks:
