@@ -2,14 +2,11 @@ import os
 from dotenv import load_dotenv
 
 APP_ROOT = os.path.join(os.path.dirname(__file__), '..')
-DOTENV_PATH = os.path.join(APP_ROOT, '.env')
+DOTENV_PATH = os.path.join(APP_ROOT, '.flaskenv')
 load_dotenv(DOTENV_PATH)
 
 
 FLASK_ENV = os.getenv('FLASK_ENV')
-
-BLOG_HOST = os.getenv('BLOG_HOST')
-BLOG_PORT = os.getenv('BLOG_PORT')
 
 API_HOST = os.getenv('API_HOST')
 API_PORT = os.getenv('API_PORT')

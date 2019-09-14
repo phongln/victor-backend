@@ -1,8 +1,5 @@
 FLASK_APP='api'
 FLASK_ENV='development'
 
-BLOG_HOST=
-BLOG_PORT=
-
 API_HOST='0.0.0.0'
 API_PORT=5000
