@@ -1,4 +1,4 @@
-FROM backend-api:latest
+FROM victor-backend:latest
 
 USER root
 
