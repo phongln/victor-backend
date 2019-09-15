@@ -14,4 +14,4 @@ docker system prune -f
 
 
 # register services to kong
-bash ./bin/kong-register-api-backend.sh
+bash ./bin/register-api/_all.sh

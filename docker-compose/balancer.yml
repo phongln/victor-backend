@@ -2,7 +2,8 @@ version: '3'
 services:
   balancer-nginx:
     container_name: balancer-nginx
-    image: victor-nginx
+    build:
+      context: ./d.balancer/nginx
     ports:
       - 8080:80
     links:
