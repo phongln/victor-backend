@@ -26,9 +26,8 @@ esac
 # variables Setting
 
 CONTEXT_ROOT=$(join_path "$(pwd)")
-
+CONTEXT_API=$(join_path "$CONTEXT_ROOT" "api")
 CONTEXT_TASK="$CONTEXT_API"
-CONTEXT_BALANCER=$(join_path $CONTEXT_ROOT 'balancer')
 
 cat > $ENV_FILE <<EOF
 ##########################################################################
