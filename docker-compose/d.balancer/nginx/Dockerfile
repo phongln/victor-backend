@@ -1,5 +1,7 @@
 FROM victor-nginx
 
+ENV CONSUL_HOST consul
+
 ADD service.consul-template.sh /etc/service/consul-template/run
 RUN chmod +x /etc/service/consul-template/run
 

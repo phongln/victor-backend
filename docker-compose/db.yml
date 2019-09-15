@@ -2,9 +2,7 @@ version: '3'
 services:
   blog-db:
     container_name: blog-db
-    build:
-      context: ${CONTEXT_DB}
-      dockerfile: Dockerfile
+    image: victor-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -18,6 +16,7 @@ services:
     restart: on-failure
 
   pgadmin4:
+    container_name: blog-pgadmin4
     image: dpage/pgadmin4:latest
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
