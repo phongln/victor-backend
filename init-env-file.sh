@@ -23,10 +23,9 @@ case $OSTYPE in
     *) ;;
 esac
 
-CONTEXT_ROOT=$(join_path "$(pwd)")
-
 # variables Setting
 
+CONTEXT_ROOT=$(join_path "$(pwd)")
 CONTEXT_API=$(join_path $CONTEXT_ROOT 'api')
 CONTEXT_DB=$(join_path $CONTEXT_ROOT 'scripts')
 CONTEXT_TASK="$CONTEXT_API"
@@ -111,5 +110,6 @@ PROXY_KONGA=konga.$HOST_NAME
 PROXY_BACKEND_API=backend-api.$HOST_NAME
 PROXY_GATEWAY=api.$HOST_NAME
 PROXY_BALANCER_CONSUL=balancer-consul.$HOST_NAME
+PROXY_ELK_KIBANA=elk-kibana.$HOST_NAME
 
 EOF
