@@ -1,10 +1,9 @@
-FROM backend-api:latest
+FROM victor-backend:latest
 
 USER root
 
 WORKDIR /home
 COPY . /home/api
-RUN mv ./api/api.env ./api/.env
 RUN cp ./api/docker-entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT sh /entrypoint.sh

@@ -30,5 +30,6 @@ function create_image {
 create_network $NETWORK_BACKEND
 create_volume $VOLUMN_DB
 create_volume $VOLUMN_KONG
-create_image $IMAGE_BACKEND_API $BUILD_BACKEND_API
-create_image $IMAGE_VICTOR_NGINX $BUILD_VICTOR_NGINX
+# create_image $IMAGE_BACKEND_API $BUILD_BACKEND_API
+# create_image $IMAGE_VICTOR_NGINX $BUILD_VICTOR_NGINX
+bash docker-build/_all.sh

@@ -23,12 +23,10 @@ case $OSTYPE in
     *) ;;
 esac
 
-CONTEXT_ROOT=$(join_path "$(pwd)")
-
 # variables Setting
 
-CONTEXT_API=$(join_path $CONTEXT_ROOT 'api')
-CONTEXT_DB=$(join_path $CONTEXT_ROOT 'scripts')
+CONTEXT_ROOT=$(join_path "$(pwd)")
+
 CONTEXT_TASK="$CONTEXT_API"
 CONTEXT_BALANCER=$(join_path $CONTEXT_ROOT 'balancer')
 
@@ -40,10 +38,7 @@ cat > $ENV_FILE <<EOF
 ##########################################################################
 
 CONTEXT_ROOT=$CONTEXT_ROOT
-CONTEXT_API=$CONTEXT_API
 CONTEXT_TASK=$CONTEXT_TASK
-CONTEXT_DB=$CONTEXT_DB
-CONTEXT_BALANCER=$CONTEXT_BALANCER
 
 HOST_IP=$HOST_IP
 
@@ -110,6 +105,7 @@ PROXY_PGADMIN=pgadmin.$HOST_NAME
 PROXY_KONGA=konga.$HOST_NAME
 PROXY_BACKEND_API=backend-api.$HOST_NAME
 PROXY_GATEWAY=api.$HOST_NAME
-PROXY_BACKEND_BALANCER=backend-balancer.$HOST_NAME
+PROXY_BALANCER_CONSUL=balancer-consul.$HOST_NAME
+PROXY_ELK_KIBANA=elk-kibana.$HOST_NAME
 
 EOF
