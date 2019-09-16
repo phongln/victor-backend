@@ -16,10 +16,14 @@ function linux_init {
     HOST_IP=$(/sbin/ip route|awk '/default/ { print $3 }')
 }
 
+function msys_init {
+    HOST_IP='10.0.75.1'
+}
+
 case $OSTYPE in 
     darwin*) darwin_init ;;
     linux*) linux_init ;;
-    msys*) ;;
+    msys*) msys_init;;
     *) ;;
 esac
 
