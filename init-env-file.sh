@@ -7,7 +7,8 @@ BASE_DIR=$(realpath $(dirname $0))
 PY_SCRIPTS=$BASE_DIR/bin/py-scripts
 DOCKER_SOCKET='/var/run/docker.sock'
 
-python=$(which python)
+python=$(which python || which python3)
+$python --version
 
 function join_path {
     $python $PY_SCRIPTS/get-path.py "$@"
