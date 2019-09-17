@@ -116,6 +116,13 @@ PROXY_BALANCER_CONSUL=balancer-consul.$HOST_NAME
 PROXY_ELK_KIBANA=elk-kibana.$HOST_NAME
 PROXY_PORTAINER=portainer.$HOST_NAME
 
+##########################################################################
+#
+# Consul Setting
+#
+##########################################################################
+
+
 
 ##########################################################################
 #
@@ -128,3 +135,5 @@ ES_JAVA_OPTS=-Xmx256m -Xms256m
 LS_JAVA_OPTS=-Xmx256m -Xms256m
 
 EOF
+
+echo "Created $BASE_DIR/$ENV_FILE"
