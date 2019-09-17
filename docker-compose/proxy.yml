@@ -6,10 +6,10 @@ services:
     ports:
       - '80:80/tcp'
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ${DOCKER_SOCKET}:/tmp/docker.sock:ro
     networks:
-      - backend-net
+      - proxy-net
 
 networks:
-  backend-net:
+  proxy-net:
     external: true

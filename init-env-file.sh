@@ -2,10 +2,15 @@
 # HOST_NAME=$(hostname)
 HOST_NAME='localhost'
 ENV_FILE='.env'
-HOST_IP= # osx default
+HOST_IP='172.17.0.1' # osx default
+BASE_DIR=$(realpath $(dirname $0))
+PY_SCRIPTS=$BASE_DIR/bin/py-scripts
+DOCKER_SOCKET='/var/run/docker.sock'
+
+python=$(which python)
 
 function join_path {
-    python bin/py-scripts/get-path.py "$@"
+    $python $PY_SCRIPTS/get-path.py "$@"
 }
 
 function darwin_init {
@@ -18,6 +23,7 @@ function linux_init {
 
 function msys_init {
     HOST_IP='10.0.75.1'
+    # DOCKER_SOCKET='\\.\pipe\docker_engine'
 }
 
 case $OSTYPE in 
@@ -30,8 +36,6 @@ esac
 # variables Setting
 
 CONTEXT_ROOT=$(join_path "$(pwd)")
-CONTEXT_API=$(join_path "$CONTEXT_ROOT" "api")
-CONTEXT_TASK="$CONTEXT_API"
 
 cat > $ENV_FILE <<EOF
 ##########################################################################
@@ -41,9 +45,9 @@ cat > $ENV_FILE <<EOF
 ##########################################################################
 
 CONTEXT_ROOT=$CONTEXT_ROOT
-CONTEXT_TASK=$CONTEXT_TASK
 
 HOST_IP=$HOST_IP
+DOCKER_SOCKET=$DOCKER_SOCKET
 
 ##########################################################################
 #
@@ -110,5 +114,17 @@ PROXY_BACKEND_API=backend-api.$HOST_NAME
 PROXY_GATEWAY=api.$HOST_NAME
 PROXY_BALANCER_CONSUL=balancer-consul.$HOST_NAME
 PROXY_ELK_KIBANA=elk-kibana.$HOST_NAME
+PROXY_PORTAINER=portainer.$HOST_NAME
+
+
+##########################################################################
+#
+# ELK Setting
+#
+##########################################################################
+
+ELK_VERSION=7.3.2
+ES_JAVA_OPTS=-Xmx256m -Xms256m
+LS_JAVA_OPTS=-Xmx256m -Xms256m
 
 EOF

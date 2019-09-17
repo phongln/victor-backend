@@ -7,12 +7,12 @@ services:
     networks:
       - task-net
       - backend-net
+    volumes:
+      - task_data
 
   task-worker:
     container_name: task-worker
-    build:
-      context: ${CONTEXT_TASK}
-      dockerfile: ./monitor/Dockerfile
+    image: victor-task
     depends_on:
       - task-queue
     links:
@@ -25,9 +25,7 @@ services:
 
   task-monitor:
     container_name: task-monitor
-    build:
-      context: ${CONTEXT_TASK}
-      dockerfile: ./monitor/Dockerfile
+    image: victor-task
     # ports:
     #   - '5555:5555'
     entrypoint: flower
@@ -36,7 +34,7 @@ services:
       - task-queue
     networks:
       - task-net
-      - backend-net
+      - proxy-net
     environment:
       VIRTUAL_HOST: ${PROXY_TASK_MONITOR}
     restart: on-failure
@@ -44,4 +42,10 @@ services:
 networks:
   task-net:
   backend-net:
+    external: true
+  proxy-net:
+    external: true
+
+volumes:
+  task_data:
     external: true

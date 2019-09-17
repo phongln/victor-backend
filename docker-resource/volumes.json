@@ -1,0 +1,27 @@
+[
+  {
+    "Name": "db_data",
+    "Driver": "local",
+    "Scope": "local"
+  },
+  {
+    "Name": "kong_data",
+    "Driver": "local",
+    "Scope": "local"
+  },
+  {
+    "Name": "task_data",
+    "Driver": "local",
+    "Scope": "local"
+  },
+  {
+    "Name": "elk_data",
+    "Driver": "local",
+    "Scope": "local"
+  },
+  {
+    "Name": "portainer_data",
+    "Driver": "local",
+    "Scope": "local"
+  }
+]
