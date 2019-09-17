@@ -12,13 +12,16 @@ PY_SCRIPTS="$ROOT_DIR/bin/py-scripts"
 
 cd $ROOT_DIR
 python=$(which python || which python3)
-cmd_load_json=$PY_SCRIPTS/load-json.py
 
+function load_json {
+    cmd_load_json=$PY_SCRIPTS/load-json.py
+    $python $cmd_load_json $1
+}
 
 OLD_IFS=$IFS && IFS=$'\n'
 
 # initialize networks
-for _config in $($python $cmd_load_json $BASE_DIR/$NETWORK_CONFIG); do
+for _config in $(load_json $BASE_DIR/$NETWORK_CONFIG); do
     curl -s -X POST http:/$DOCKER_API_VERSION/networks/create \
         --unix-socket $DOCKER_SOCKET \
         -H "Content-Type: application/json" \
@@ -26,7 +29,7 @@ for _config in $($python $cmd_load_json $BASE_DIR/$NETWORK_CONFIG); do
 done
 
 # initialize volumes
-for _config in $($python $cmd_load_json $BASE_DIR/$VOLUME_CONFIG); do
+for _config in $(load_json $BASE_DIR/$VOLUME_CONFIG); do
     curl -s -X POST http:/$DOCKER_API_VERSION/volumes/create \
         --unix-socket $DOCKER_SOCKET \
         -H "Content-Type: application/json" \
