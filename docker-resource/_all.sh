@@ -11,7 +11,7 @@ BASE_DIR=$(realpath $(dirname $0))
 PY_SCRIPTS="$ROOT_DIR/bin/py-scripts"
 
 cd $ROOT_DIR
-python=$(which python)
+python=$(which python || which python3)
 cmd_load_json=$PY_SCRIPTS/load-json.py
 
 
