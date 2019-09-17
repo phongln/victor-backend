@@ -1,4 +1,4 @@
-export BASE_DIR=$(dirname $0)
+export BASE_DIR=$(realpath $(dirname $0))
 export KONG_HOST='localhost'
 export KONG_ADMIN_PORT=8001
 

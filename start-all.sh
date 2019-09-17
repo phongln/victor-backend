@@ -1,14 +1,20 @@
 #!/bin/bash
 
-PROJECT_NAME=victor
-DOCKER_COMPOSE_DIR='./docker-compose'
+export PROJECT_NAME=victor
+export DOCKER_API_VERSION='1.40'
+export DOCKER_SOCKET='/var/run/docker.sock'
 
+export ROOT_DIR=$(realpath $(dirname $0))
+export PY_SCRIPTS=$ROOT_DIR/bin/py-scripts
+
+
+# prepairing
 bash ./init-env-file.sh
-bash ./init-docker-resource.sh
+bash ./docker-build/_all.sh
+bash ./docker-resource/_all.sh
 
-for _compose_file in $DOCKER_COMPOSE_DIR/[^_]*.yml; do
-    docker-compose -p $PROJECT_NAME -f $_compose_file up -d --build
-done
+# up all services
+bash ./docker-compose/_all.sh
 
 # register services to kong
 bash ./bin/register-api/_all.sh

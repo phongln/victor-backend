@@ -1,0 +1,62 @@
+version: '3'
+services:
+  elk-es:
+    build:
+      context: d.elk/elasticsearch
+      args:
+        ELK_VERSION: ${ELK_VERSION}
+    # ports:
+    #   - 9200:9200
+    networks:
+      - elk-net
+    volumes:
+      - elk_data:/usr/share/elasticsearch/data
+    environment:
+      ES_JAVA_OPTS: ${ES_JAVA_OPTS}
+  
+  elk-kibana:
+    container_name: elk-kibana
+    build:
+      context: d.elk/kibana
+      args:
+        ELK_VERSION: ${ELK_VERSION}
+    depends_on:
+      - elk-es
+    networks:
+      - elk-net
+      - proxy-net
+    # ports:
+    #   - 5601:5601
+    links:
+      - elk-es:elasticsearch
+    environment:
+      VIRTUAL_HOST: ${PROXY_ELK_KIBANA}
+  
+  elk-logstash:
+    build:
+      context: d.elk/logstash
+      args:
+        ELK_VERSION: ${ELK_VERSION}
+    links:
+      - elk-es:elasticsearch
+    networks:
+      - elk-net
+      - backend-net
+    depends_on:
+      - elk-es
+    ports:
+      - 9600:9600
+      - 5000:5000
+    environment:
+      LS_JAVA_OPTS: ${LS_JAVA_OPTS}
+
+networks:
+  elk-net:
+  backend-net:
+    external: true
+  proxy-net:
+    external: true
+
+volumes:
+  elk_data:
+    external: true

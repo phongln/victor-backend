@@ -1,1 +1,3 @@
-FROM kibana:7.3.2
+ARG ELK_VERSION
+
+FROM kibana:${ELK_VERSION}

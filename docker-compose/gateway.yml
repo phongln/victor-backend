@@ -47,6 +47,7 @@ services:
     networks:
       - kong-net
       - backend-net
+      - gateway-net
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: kong-db
@@ -59,8 +60,6 @@ services:
       KONG_ADMIN_ACCESS_LOG: /dev/stdout
       KONG_ADMIN_ERROR_LOG: /dev/stderr
       KONG_ADMIN_LISTEN: '0.0.0.0:8001, 0.0.0.0:8444 ssl'
-      # VIRTUAL_HOST: ${PROXY_GATEWAY}
-      # VIRTUAL_PORT: '8000'
     ports:
       - '8000:8000/tcp'
       - '8001:8001/tcp'
@@ -95,7 +94,7 @@ services:
       - konga-migrations
     networks:
       - kong-net
-      - backend-net
+      - proxy-net
     # ports:
     #   - '1337:1337/tcp'
     environment:
@@ -115,4 +114,8 @@ volumes:
 networks:
   kong-net:
   backend-net:
+    external: true
+  proxy-net:
+    external: true
+  gateway-net:
     external: true

@@ -1,7 +1,6 @@
 version: '3'
 services:
   blog-db:
-    container_name: blog-db
     image: victor-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -15,7 +14,7 @@ services:
       - db_data:/var/lib/postgresql/data
     restart: on-failure
 
-  pgadmin4:
+  blog-pgadmin4:
     container_name: blog-pgadmin4
     image: dpage/pgadmin4:latest
     environment:
@@ -27,8 +26,7 @@ services:
     links:
       - blog-db
     networks:
-      - db-net
-      - backend-net
+      - proxy-net
     # ports:
     #   - '8088:80/tcp'
     volumes:
@@ -39,6 +37,9 @@ networks:
   db-net:
   backend-net:
     external: true
+  proxy-net:
+    external: true
+
 
 volumes:
   db_data:
