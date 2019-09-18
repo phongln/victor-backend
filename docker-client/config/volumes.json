@@ -1,0 +1,22 @@
+[
+  {
+    "name": "db_data",
+    "driver": "local"
+  },
+  {
+    "name": "kong_data",
+    "driver": "local"
+  },
+  {
+    "name": "task_data",
+    "driver": "local"
+  },
+  {
+    "name": "elk_data",
+    "driver": "local"
+  },
+  {
+    "name": "portainer_data",
+    "driver": "local"
+  }
+]

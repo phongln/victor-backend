@@ -1,0 +1,29 @@
+[
+  {
+    "tag": "victor-nginx",
+    "path": "nginx",
+    "buildargs": {
+      "CT_VERSION": "0.22.0",
+      "CT_FILENAME": "consul-template_0.22.0_linux_amd64.zip",
+      "CT_URL": "https://releases.hashicorp.com/consul-template"
+    }
+  },
+  {
+    "tag": "victor-backend",
+    "path": "api",
+    "dockerfile": "backend-api.Dockerfile"
+  },
+  {
+    "tag": "victor-api",
+    "path": "api"
+  },
+  {
+    "tag": "victor-db",
+    "path": "scripts"
+  },
+  {
+    "tag": "victor-task",
+    "path": "api",
+    "dockerfile": "monitor/Dockerfile"
+  }
+]

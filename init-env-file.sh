@@ -1,11 +1,13 @@
 # declaration
 # HOST_NAME=$(hostname)
-HOST_NAME='localhost'
-ENV_FILE='.env'
-HOST_IP='172.17.0.1' # osx default
+
 BASE_DIR=$(realpath $(dirname $0))
-PY_SCRIPTS=$BASE_DIR/bin/py-scripts
-DOCKER_SOCKET='/var/run/docker.sock'
+
+export HOST_NAME='localhost'
+export ENV_FILE='.env'
+export HOST_IP='172.17.0.1' # osx default
+export PY_SCRIPTS=$BASE_DIR/bin/py-scripts
+export DOCKER_SOCKET='/var/run/docker.sock'
 
 python=$(which python || which python3)
 $python --version

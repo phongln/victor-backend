@@ -1,0 +1,17 @@
+[
+  {
+    "name": "backend-net",
+    "driver": "bridge",
+    "check_duplicate": true
+  },
+  {
+    "name": "proxy-net",
+    "driver": "bridge",
+    "check_duplicate": true
+  },
+  {
+    "name": "gateway-net",
+    "driver": "bridge",
+    "check_duplicate": true
+  }
+]
