@@ -1,6 +1,6 @@
 #!/bin/python
 
 if __name__ == '__main__':
-    from . import init_all_resources
+    from .cli import init_resource
 
-    init_all_resources()
+    init_resource()

@@ -7,7 +7,7 @@ services:
     # ports:
     #   - 8080:80
     environment:
-      CONSUL_HOST: 'consul-server'
+      CONSUL_HOST: 'consul'
     networks:
       - backend-net
     restart: on-failure

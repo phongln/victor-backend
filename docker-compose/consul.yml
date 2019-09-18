@@ -1,7 +1,7 @@
 version: '3'
 services:
-  consul-server:
-    container_name: consul-server
+  consul:
+    container_name: consul
     image: progrium/consul
     command: -server -bootstrap -advertise ${HOST_IP}
     labels:
@@ -22,7 +22,7 @@ services:
     image: gliderlabs/registrator:latest
     command: '-internal consul://consul:8500'
     links:
-      - consul-server:consul
+      - consul:consul
     volumes:
       - ${DOCKER_SOCKET}:/tmp/docker.sock
     networks:

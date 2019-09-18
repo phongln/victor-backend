@@ -2,12 +2,14 @@
 # HOST_NAME=$(hostname)
 
 BASE_DIR=$(realpath $(dirname $0))
+DATA_DIR=~/data # osx default
 
 export HOST_NAME='localhost'
 export ENV_FILE='.env'
 export HOST_IP='172.17.0.1' # osx default
 export PY_SCRIPTS=$BASE_DIR/bin/py-scripts
 export DOCKER_SOCKET='/var/run/docker.sock'
+export DOCKER_CONTAINER_LOGS='/var/lib/docker/containers'
 
 python=$(which python || which python3)
 $python --version
@@ -37,8 +39,10 @@ case $OSTYPE in
 esac
 
 # variables Setting
-
 CONTEXT_ROOT=$(join_path "$(pwd)")
+ES_DATA=$(join_path "$DATA_DIR" "elk" "elasticsearch" "data")
+
+
 
 cat > $ENV_FILE <<EOF
 ##########################################################################
@@ -51,6 +55,7 @@ CONTEXT_ROOT=$CONTEXT_ROOT
 
 HOST_IP=$HOST_IP
 DOCKER_SOCKET=$DOCKER_SOCKET
+DOCKER_CONTAINER_LOGS=$DOCKER_CONTAINER_LOGS
 
 ##########################################################################
 #
@@ -134,8 +139,11 @@ PROXY_PORTAINER=portainer.$HOST_NAME
 ##########################################################################
 
 ELK_VERSION=7.3.2
+ES_CLUSTER_NAME=docker-cluster
 ES_JAVA_OPTS=-Xmx256m -Xms256m
+ES_DATA=$ES_DATA
 LS_JAVA_OPTS=-Xmx256m -Xms256m
+
 
 EOF
 

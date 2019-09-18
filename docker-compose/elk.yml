@@ -1,6 +1,7 @@
 version: '3'
 services:
   elk-es:
+    container_name: elk-es
     build:
       context: d.elk/elasticsearch
       args:
@@ -10,10 +11,11 @@ services:
     networks:
       - elk-net
     volumes:
-      - elk_data:/usr/share/elasticsearch/data
+      - ${ES_DATA}:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: ${ES_JAVA_OPTS}
-  
+      ES_CLUSTER_NAME: ${ES_CLUSTER_NAME}
+
   elk-kibana:
     container_name: elk-kibana
     build:
@@ -31,24 +33,38 @@ services:
       - elk-es:elasticsearch
     environment:
       VIRTUAL_HOST: ${PROXY_ELK_KIBANA}
-  
+
   elk-logstash:
+    container_name: elk-logstash
     build:
       context: d.elk/logstash
       args:
         ELK_VERSION: ${ELK_VERSION}
     links:
       - elk-es:elasticsearch
+      - elk-filebeat:filebeat
     networks:
       - elk-net
       - backend-net
     depends_on:
       - elk-es
-    ports:
-      - 9600:9600
-      - 5000:5000
+    # ports:
+    #   - 9600:9600
+    #   - 5000:5000
     environment:
       LS_JAVA_OPTS: ${LS_JAVA_OPTS}
+
+  elk-filebeat:
+    container_name: elk-filebeat
+    build:
+      context: d.elk/filebeat
+      args:
+        ELK_VERSION: ${ELK_VERSION}
+    networks:
+      - elk-net
+    volumes:
+      - ${DOCKER_SOCKET}:/var/run/docker.sock
+      - ${DOCKER_CONTAINER_LOGS}:/usr/share/dockerlogs/data:ro
 
 networks:
   elk-net:
